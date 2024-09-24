@@ -1,0 +1,46 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+
+struct Studentas {
+    string vardas;
+    string pavarde;
+    vector<int> namuDarbuRezultatai;
+    int egzaminoRezultatas;
+};
+
+int main() {
+    Studentas studentas;
+    int namuDarbaiKiekis;
+    int laikinasRezultatas;
+
+    cout << "Iveskite studento varda: ";
+    getline(cin, studentas.vardas);
+
+    cout << "Iveskite studento pavarde : ";
+    getline(cin, studentas.pavarde);
+
+    cout << "Iveskite namu darbu kieki: ";
+    cin >> namuDarbaiKiekis;
+
+    for (int i = 0; i < namuDarbaiKiekis; i++) {
+        cout << "Iveskite " << i + 1 << "-ojo namu darbo rezultata: ";
+        cin >> laikinasRezultatas;
+        studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+    }
+
+    cout << "Iveskite egzamino rezultata: ";
+    cin >> studentas.egzaminoRezultatas;
+
+    cout << "\nStudento vardas ir pavarde: " << studentas.vardas << " " << studentas.pavarde << endl;
+    cout << "Namu darbų rezultatai: ";
+    for (int rezultatas : studentas.namuDarbuRezultatai) {
+        cout << rezultatas << " ";
+    }
+    cout << "\nEgzamino rezultatas: " << studentas.egzaminoRezultatas << endl;
+
+    return 0;
+}
