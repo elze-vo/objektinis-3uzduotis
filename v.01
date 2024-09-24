@@ -4,6 +4,8 @@
 #include <numeric>
 #include <iomanip>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -24,6 +26,8 @@ double calculateMedian(vector<int>& grades) {
 }
 
 int main() {
+    srand(static_cast<unsigned>(time(0)));
+
     vector<Studentas> studentai;
     int studentuSkaicius;
     int laikinasRezultatas;
@@ -31,6 +35,12 @@ int main() {
 
     cout << "Iveskite studentu skaiciu: ";
     cin >> studentuSkaicius;
+    cin.ignore();
+
+    cout << "Pasirinkite, kaip ivesti rezultatus:\n";
+    cout << "1 - Rankiniu budu\n";
+    cout << "2 - Atsitiktinai sugeneruoti\n";
+    cin >> pasirinkimas;
     cin.ignore();
 
     for (int i = 0; i < studentuSkaicius; i++) {
@@ -41,26 +51,43 @@ int main() {
         cout << "Iveskite " << i + 1 << "-ojo studento pavarde: ";
         getline(cin, studentas.pavarde);
 
-        cout << "Iveskite namu darbu rezultatus (spauskite ENTER, kai suvedete visus): " << endl;
-        while (true) {
-            cout << "Namu darbo rezultatas: ";
-            string input;
-            getline(cin, input);
-            if (input.empty()) {
-                break;
+        cout << "Iveskite namu darbu rezultatus (spauskite ENTER, kai baigsite): " << endl;
+        if (pasirinkimas == 1) {
+            while (true) {
+                cout << "Namu darbo rezultatas: ";
+                string input;
+                getline(cin, input);
+                if (input.empty()) {
+                    break;
+                }
+                try {
+                    laikinasRezultatas = stoi(input);
+                    studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+                }
+                catch (const invalid_argument& e) {
+                    cout << "Ivestas netinkamas rezultatas. Bandykite dar karta." << endl;
+                }
             }
-            try {
-                laikinasRezultatas = stoi(input);
+        }
+        else {
+            int namuDarbaiKiekis;
+            cout << "Iveskite namu darbu kieki: ";
+            cin >> namuDarbaiKiekis;
+            cin.ignore();
+            for (int j = 0; j < namuDarbaiKiekis; j++) {
+                laikinasRezultatas = rand() % 11;
                 studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
-            }
-            catch (const invalid_argument& e) {
-                cout << "Ivestas netinkamas rezultatas. Bandykite dar karta." << endl;
             }
         }
 
-        cout << "Iveskite egzamino rezultata: ";
-        cin >> studentas.egzaminoRezultatas;
-        cin.ignore();
+        if (pasirinkimas == 1) {
+            cout << "Iveskite egzamino rezultata: ";
+            cin >> studentas.egzaminoRezultatas;
+            cin.ignore();
+        }
+        else {
+            studentas.egzaminoRezultatas = rand() % 11;
+        }
 
         studentai.push_back(studentas);
     }
