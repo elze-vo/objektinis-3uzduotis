@@ -26,16 +26,11 @@ double calculateMedian(vector<int>& grades) {
 int main() {
     vector<Studentas> studentai;
     int studentuSkaicius;
-    int namuDarbaiKiekis;
     int laikinasRezultatas;
     int pasirinkimas;
 
     cout << "Iveskite studentu skaiciu: ";
     cin >> studentuSkaicius;
-    cin.ignore();
-
-    cout << "Iveskite namu darbu kieki visiems studentams: ";
-    cin >> namuDarbaiKiekis;
     cin.ignore();
 
     for (int i = 0; i < studentuSkaicius; i++) {
@@ -46,11 +41,21 @@ int main() {
         cout << "Iveskite " << i + 1 << "-ojo studento pavarde: ";
         getline(cin, studentas.pavarde);
 
-        studentas.namuDarbuRezultatai.clear();
-        for (int j = 0; j < namuDarbaiKiekis; j++) {
-            cout << "Iveskite " << j + 1 << "-ojo namu darbo rezultata: ";
-            cin >> laikinasRezultatas;
-            studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+        cout << "Iveskite namu darbu rezultatus (spauskite ENTER, kai suvedete visus): " << endl;
+        while (true) {
+            cout << "Namu darbo rezultatas: ";
+            string input;
+            getline(cin, input);
+            if (input.empty()) {
+                break;
+            }
+            try {
+                laikinasRezultatas = stoi(input);
+                studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+            }
+            catch (const invalid_argument& e) {
+                cout << "Ivestas netinkamas rezultatas. Bandykite dar karta." << endl;
+            }
         }
 
         cout << "Iveskite egzamino rezultata: ";
@@ -75,7 +80,8 @@ int main() {
         if (pasirinkimas == 1) {
             double namuDarbuVidurkis = accumulate(studentas.namuDarbuRezultatai.begin(), studentas.namuDarbuRezultatai.end(), 0.0) / studentas.namuDarbuRezultatai.size();
             galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.egzaminoRezultatas;
-        } else {
+        }
+        else {
             vector<int> namuDarbuCopy = studentas.namuDarbuRezultatai;
             double namuDarbuMediana = calculateMedian(namuDarbuCopy);
             galutinisVid = 0.4 * namuDarbuMediana + 0.6 * studentas.egzaminoRezultatas;
