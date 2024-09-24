@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <numeric>
+#include <iomanip>
 
 using namespace std;
 
@@ -20,7 +21,7 @@ int main() {
 
     cout << "Iveskite studentu skaiciu: ";
     cin >> studentuSkaicius;
-    cin.ignore(); 
+    cin.ignore();
 
     cout << "Iveskite namu darbu kieki visiems studentams: ";
     cin >> namuDarbaiKiekis;
@@ -43,28 +44,27 @@ int main() {
 
         cout << "Iveskite egzamino rezultata: ";
         cin >> studentas.egzaminoRezultatas;
-        cin.ignore();
+        cin.ignore(); // Ignore newline character after exam input
 
         studentai.push_back(studentas);
     }
 
-    for (int i = 0; i < studentai.size(); i++) {
-        Studentas studentas = studentai[i];
+    cout << "\n" << setw(15) << left << "Vardas" 
+         << setw(15) << left << "Pavarde" 
+         << "Galutinis (vid.)" << endl;
 
+    cout << string(50, '-') << endl;
+
+    cout << fixed << setprecision(2);
+    for (const auto& studentas : studentai) {
         double namuDarbuVidurkis = accumulate(studentas.namuDarbuRezultatai.begin(), studentas.namuDarbuRezultatai.end(), 0.0) / studentas.namuDarbuRezultatai.size();
 
         double galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.egzaminoRezultatas;
 
-        cout << "\nStudento vardas ir pavarde: " << studentas.vardas << " " << studentas.pavarde << endl;
-        cout << "Namu darbu rezultatai: ";
-        for (int rezultatas : studentas.namuDarbuRezultatai) {
-            cout << rezultatas << " ";
-        }
-        cout << "\nEgzamino rezultatas: " << studentas.egzaminoRezultatas << endl;
-        cout << "Galutinis (Vid.): " << galutinisVid << endl;
+        cout << setw(15) << left << studentas.vardas 
+             << setw(15) << left << studentas.pavarde 
+             << galutinisVid << endl;
     }
 
     return 0;
 }
-
-
