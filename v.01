@@ -3,6 +3,7 @@
 #include <vector>
 #include <numeric>
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 
@@ -13,11 +14,21 @@ struct Studentas {
     int egzaminoRezultatas;
 };
 
+double calculateMedian(vector<int>& grades) {
+    sort(grades.begin(), grades.end());
+    size_t size = grades.size();
+    if (size % 2 == 0) {
+        return (grades[size / 2 - 1] + grades[size / 2]) / 2.0;
+    }
+    return grades[size / 2];
+}
+
 int main() {
     vector<Studentas> studentai;
     int studentuSkaicius;
     int namuDarbaiKiekis;
     int laikinasRezultatas;
+    int pasirinkimas;
 
     cout << "Iveskite studentu skaiciu: ";
     cin >> studentuSkaicius;
@@ -44,26 +55,35 @@ int main() {
 
         cout << "Iveskite egzamino rezultata: ";
         cin >> studentas.egzaminoRezultatas;
-        cin.ignore(); // Ignore newline character after exam input
+        cin.ignore();
 
         studentai.push_back(studentas);
     }
 
-    cout << "\n" << setw(15) << left << "Vardas" 
-         << setw(15) << left << "Pavarde" 
-         << "Galutinis (vid.)" << endl;
+    cout << "Pasirinkite (1 - Vidurkis, 2 - Mediana): ";
+    cin >> pasirinkimas;
+
+    cout << "\n" << setw(15) << left << "Vardas"
+        << setw(15) << left << "Pavarde"
+        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
 
     cout << string(50, '-') << endl;
 
     cout << fixed << setprecision(2);
     for (const auto& studentas : studentai) {
-        double namuDarbuVidurkis = accumulate(studentas.namuDarbuRezultatai.begin(), studentas.namuDarbuRezultatai.end(), 0.0) / studentas.namuDarbuRezultatai.size();
+        double galutinisVid;
+        if (pasirinkimas == 1) {
+            double namuDarbuVidurkis = accumulate(studentas.namuDarbuRezultatai.begin(), studentas.namuDarbuRezultatai.end(), 0.0) / studentas.namuDarbuRezultatai.size();
+            galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.egzaminoRezultatas;
+        } else {
+            vector<int> namuDarbuCopy = studentas.namuDarbuRezultatai;
+            double namuDarbuMediana = calculateMedian(namuDarbuCopy);
+            galutinisVid = 0.4 * namuDarbuMediana + 0.6 * studentas.egzaminoRezultatas;
+        }
 
-        double galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.egzaminoRezultatas;
-
-        cout << setw(15) << left << studentas.vardas 
-             << setw(15) << left << studentas.pavarde 
-             << galutinisVid << endl;
+        cout << setw(15) << left << studentas.vardas
+            << setw(15) << left << studentas.pavarde
+            << galutinisVid << endl;
     }
 
     return 0;
