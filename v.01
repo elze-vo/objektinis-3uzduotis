@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <numeric>
 
 using namespace std;
-
 
 struct Studentas {
     string vardas;
@@ -13,34 +13,58 @@ struct Studentas {
 };
 
 int main() {
-    Studentas studentas;
+    vector<Studentas> studentai;
+    int studentuSkaicius;
     int namuDarbaiKiekis;
     int laikinasRezultatas;
 
-    cout << "Iveskite studento varda: ";
-    getline(cin, studentas.vardas);
+    cout << "Iveskite studentu skaiciu: ";
+    cin >> studentuSkaicius;
+    cin.ignore(); 
 
-    cout << "Iveskite studento pavarde : ";
-    getline(cin, studentas.pavarde);
-
-    cout << "Iveskite namu darbu kieki: ";
+    cout << "Iveskite namu darbu kieki visiems studentams: ";
     cin >> namuDarbaiKiekis;
+    cin.ignore();
 
-    for (int i = 0; i < namuDarbaiKiekis; i++) {
-        cout << "Iveskite " << i + 1 << "-ojo namu darbo rezultata: ";
-        cin >> laikinasRezultatas;
-        studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+    for (int i = 0; i < studentuSkaicius; i++) {
+        Studentas studentas;
+        cout << "\nIveskite " << i + 1 << "-ojo studento varda: ";
+        getline(cin, studentas.vardas);
+
+        cout << "Iveskite " << i + 1 << "-ojo studento pavarde: ";
+        getline(cin, studentas.pavarde);
+
+        studentas.namuDarbuRezultatai.clear();
+        for (int j = 0; j < namuDarbaiKiekis; j++) {
+            cout << "Iveskite " << j + 1 << "-ojo namu darbo rezultata: ";
+            cin >> laikinasRezultatas;
+            studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+        }
+
+        cout << "Iveskite egzamino rezultata: ";
+        cin >> studentas.egzaminoRezultatas;
+        cin.ignore();
+
+        studentai.push_back(studentas);
     }
 
-    cout << "Iveskite egzamino rezultata: ";
-    cin >> studentas.egzaminoRezultatas;
+    for (int i = 0; i < studentai.size(); i++) {
+        Studentas studentas = studentai[i];
 
-    cout << "\nStudento vardas ir pavarde: " << studentas.vardas << " " << studentas.pavarde << endl;
-    cout << "Namu darbų rezultatai: ";
-    for (int rezultatas : studentas.namuDarbuRezultatai) {
-        cout << rezultatas << " ";
+        double namuDarbuVidurkis = accumulate(studentas.namuDarbuRezultatai.begin(), studentas.namuDarbuRezultatai.end(), 0.0) / studentas.namuDarbuRezultatai.size();
+
+        double galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.egzaminoRezultatas;
+
+        cout << "\nStudento vardas ir pavarde: " << studentas.vardas << " " << studentas.pavarde << endl;
+        cout << "Namu darbu rezultatai: ";
+        for (int rezultatas : studentas.namuDarbuRezultatai) {
+            cout << rezultatas << " ";
+        }
+        cout << "\nEgzamino rezultatas: " << studentas.egzaminoRezultatas << endl;
+        cout << "Galutinis (Vid.): " << galutinisVid << endl;
     }
-    cout << "\nEgzamino rezultatas: " << studentas.egzaminoRezultatas << endl;
 
     return 0;
 }
+
+
