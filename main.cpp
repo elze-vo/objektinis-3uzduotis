@@ -68,6 +68,10 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
     file.close();
 }
 
+bool compareByLastName(const Studentas& a, const Studentas& b) {
+    return a.pavarde < b.pavarde;
+}
+
 int main() {
     vector<Studentas> studentai;
     int pasirinkimas;
@@ -82,6 +86,8 @@ int main() {
         cout << "Failas tuscias arba nesugebeta nuskaityti studentu." << endl;
         return 1;
     }
+
+    sort(studentai.begin(), studentai.end(), compareByLastName);
 
     cout << "Pasirinkite (1 - Vidurkis, 2 - Mediana): ";
     cin >> pasirinkimas;
