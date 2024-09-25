@@ -4,8 +4,8 @@
 #include <numeric>
 #include <iomanip>
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -19,77 +19,68 @@ struct Studentas {
 double calculateMedian(vector<int>& grades) {
     sort(grades.begin(), grades.end());
     size_t size = grades.size();
+    if (size == 0) return 0.0;
     if (size % 2 == 0) {
         return (grades[size / 2 - 1] + grades[size / 2]) / 2.0;
     }
     return grades[size / 2];
 }
 
-int main() {
-    srand(static_cast<unsigned>(time(0)));
+void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
+    ifstream file(fileName);
+    if (!file) {
+        cout << "Nepavyko atidaryti failo: " << fileName << endl;
+        return;
+    }
 
-    vector<Studentas> studentai;
-    int studentuSkaicius;
-    int laikinasRezultatas;
-    int pasirinkimas;
+    string line;
+    getline(file, line);
+    istringstream headerStream(line);
+    string headerWord;
+    int numHomework = 0;
 
-    cout << "Iveskite studentu skaiciu: ";
-    cin >> studentuSkaicius;
-    cin.ignore();
+    while (headerStream >> headerWord) {
+        if (headerWord.find("ND") != string::npos) {
+            numHomework++;
+        }
+    }
 
-    cout << "Pasirinkite, kaip ivesti rezultatus:\n";
-    cout << "1 - Rankiniu budu\n";
-    cout << "2 - Atsitiktinai sugeneruoti\n";
-    cin >> pasirinkimas;
-    cin.ignore();
-
-    for (int i = 0; i < studentuSkaicius; i++) {
+    while (getline(file, line)) {
+        istringstream iss(line);
         Studentas studentas;
-        cout << "\nIveskite " << i + 1 << "-ojo studento varda: ";
-        getline(cin, studentas.vardas);
+        int rezultatas;
 
-        cout << "Iveskite " << i + 1 << "-ojo studento pavarde: ";
-        getline(cin, studentas.pavarde);
+        iss >> studentas.vardas >> studentas.pavarde;
 
-        cout << "Iveskite namu darbu rezultatus (spauskite ENTER, kai baigsite): " << endl;
-        if (pasirinkimas == 1) {
-            while (true) {
-                cout << "Namu darbo rezultatas: ";
-                string input;
-                getline(cin, input);
-                if (input.empty()) {
-                    break;
-                }
-                try {
-                    laikinasRezultatas = stoi(input);
-                    studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
-                }
-                catch (const invalid_argument& e) {
-                    cout << "Ivestas netinkamas rezultatas. Bandykite dar karta." << endl;
-                }
-            }
-        }
-        else {
-            int namuDarbaiKiekis;
-            cout << "Iveskite namu darbu kieki: ";
-            cin >> namuDarbaiKiekis;
-            cin.ignore();
-            for (int j = 0; j < namuDarbaiKiekis; j++) {
-                laikinasRezultatas = rand() % 11;
-                studentas.namuDarbuRezultatai.push_back(laikinasRezultatas);
+        for (int i = 0; i < numHomework; ++i) {
+            if (iss >> rezultatas) {
+                studentas.namuDarbuRezultatai.push_back(rezultatas);
             }
         }
 
-        if (pasirinkimas == 1) {
-            cout << "Iveskite egzamino rezultata: ";
-            cin >> studentas.egzaminoRezultatas;
-            cin.ignore();
-        }
-        else {
-            studentas.egzaminoRezultatas = rand() % 11;
+        if (iss >> rezultatas) {
+            studentas.egzaminoRezultatas = rezultatas;
         }
 
         studentai.push_back(studentas);
+    }
+
+    file.close();
+}
+
+int main() {
+    vector<Studentas> studentai;
+    int pasirinkimas;
+    string failoPavadinimas;
+
+    cout << "Iveskite failo pavadinima (pvz., studentai.txt): ";
+    cin >> failoPavadinimas;
+
+    skaitytiIsFailo(studentai, failoPavadinimas);
+
+    if (studentai.empty()) {
+        cout << "Failas tuscias arba nesugebeta nuskaityti studentu." << endl;
+        return 1;
     }
 
     cout << "Pasirinkite (1 - Vidurkis, 2 - Mediana): ";
