@@ -9,9 +9,21 @@ using namespace std;
 
 void addStudentsManually(vector<Studentas>& studentai) {
     int numberOfStudents;
-    cout << "Iveskite studentu kieki: ";
-    cin >> numberOfStudents;
-    cin.ignore();
+
+    while (true) {
+        cout << "Iveskite studentu kieki (didesnis uz 0): ";
+        cin >> numberOfStudents;
+
+        if (cin.fail() || numberOfStudents <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas ivestis. Bandykite dar karta.\n";
+        }
+        else {
+            cin.ignore();
+            break;
+        }
+    }
 
     for (int i = 0; i < numberOfStudents; ++i) {
         Studentas studentas;
