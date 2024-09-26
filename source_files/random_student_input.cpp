@@ -3,13 +3,27 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 
 using namespace std;
 
 void addStudentsRandomly(vector<Studentas>& studentai) {
     int numberOfStudents;
-    cout << "Iveskite studentu kieki: ";
-    cin >> numberOfStudents;
+
+    while (true) {
+        cout << "Iveskite studentu kieki (didesnis uz 0): ";
+        cin >> numberOfStudents;
+
+        if (cin.fail() || numberOfStudents <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas ivestis. Bandykite dar karta.\n";
+        }
+        else {
+            cin.ignore();
+            break;
+        }
+    }
 
     auto seed = static_cast<unsigned int>(time(nullptr) % UINT32_MAX);
     srand(seed);
