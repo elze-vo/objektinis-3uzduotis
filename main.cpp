@@ -89,28 +89,52 @@ int main() {
 
     sort(studentai.begin(), studentai.end(), compareByLastName);
 
-    cout << "\n" << setw(15) << left << "Vardas"
-        << setw(15) << left << "Pavarde"
-        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+    int outputOption;
+    do {
+        cout << "Pasirinkite rezultatu atvaizdavimo buda:\n";
+        cout << "1 - Spausdinti ekrane\n";
+        cout << "2 - Issaugoti faile\n";
+        cout << "3 - Spausdinti ir issaugoti faile\n";
+        cout << "Iveskite pasirinkima: ";
+        cin >> outputOption;
 
-    cout << string(50, '-') << endl;
-
-    cout << fixed << setprecision(2);
-    for (const auto& studentas : studentai) {
-        double galutinisVid;
-        if (pasirinkimas == 1) {
-            double namuDarbuVidurkis = accumulate(studentas.rezultatai.namuDarbuRezultatai.begin(), studentas.rezultatai.namuDarbuRezultatai.end(), 0.0) / studentas.rezultatai.namuDarbuRezultatai.size();
-            galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.rezultatai.egzaminoRezultatas;
+        if (cin.fail() || (outputOption < 1 || outputOption > 3)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
         }
         else {
-            vector<int> namuDarbuCopy = studentas.rezultatai.namuDarbuRezultatai;
-            double namuDarbuMediana = calculateMedian(namuDarbuCopy);
-            galutinisVid = 0.4 * namuDarbuMediana + 0.6 * studentas.rezultatai.egzaminoRezultatas;
+            break;
         }
+    } while (true);
 
-        cout << setw(15) << left << studentas.vardas
-            << setw(15) << left << studentas.pavarde
-            << galutinisVid << endl;
+    string fileName;
+    ofstream outputFile;
+
+    if (outputOption == 2 || outputOption == 3) {
+        cout << "Iveskite failo pavadinima: ";
+        cin >> fileName;
+        outputFile.open(fileName);
+
+        if (!outputFile.is_open()) {
+            cout << "Nepavyko atidaryti failo.\n";
+            return 1;
+        }
+    }
+
+    if (outputOption == 1) {
+        printOrSaveResults(studentai, pasirinkimas, cout);
+    }
+    else if (outputOption == 2) {
+        printOrSaveResults(studentai, pasirinkimas, outputFile);
+        outputFile.close();
+        cout << "Rezultatai issaugoti faile: " << fileName << endl;
+    }
+    else if (outputOption == 3) {
+        printOrSaveResults(studentai, pasirinkimas, cout);
+        printOrSaveResults(studentai, pasirinkimas, outputFile);
+        outputFile.close();
+        cout << "Rezultatai issaugoti faile: " << fileName << endl;
     }
 
     return 0;
