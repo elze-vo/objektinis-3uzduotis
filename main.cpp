@@ -93,8 +93,8 @@ int main() {
     do {
         cout << "Pasirinkite rezultatu atvaizdavimo buda:\n";
         cout << "1 - Spausdinti ekrane\n";
-        cout << "2 - Issaugoti faile\n";
-        cout << "3 - Spausdinti ir issaugoti faile\n";
+        cout << "2 - Issaugoti failuose (islaike.txt ir neislaike.txt)\n";
+        cout << "3 - Spausdinti ir issaugoti failuose\n";
         cout << "Iveskite pasirinkima: ";
         cin >> outputOption;
 
@@ -108,33 +108,18 @@ int main() {
         }
     } while (true);
 
-    string fileName;
-    ofstream outputFile;
-
-    if (outputOption == 2 || outputOption == 3) {
-        cout << "Iveskite failo pavadinima: ";
-        cin >> fileName;
-        outputFile.open(fileName);
-
-        if (!outputFile.is_open()) {
-            cout << "Nepavyko atidaryti failo.\n";
-            return 1;
-        }
-    }
+    cout << fixed << setprecision(2);
 
     if (outputOption == 1) {
-        printOrSaveResults(studentai, pasirinkimas, cout);
+        printOrSaveResults(studentai, pasirinkimas);
     }
     else if (outputOption == 2) {
-        printOrSaveResults(studentai, pasirinkimas, outputFile);
-        outputFile.close();
-        cout << "Rezultatai issaugoti faile: " << fileName << endl;
+        printOrSaveResults(studentai, pasirinkimas);
+        cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt\n";
     }
     else if (outputOption == 3) {
-        printOrSaveResults(studentai, pasirinkimas, cout);
-        printOrSaveResults(studentai, pasirinkimas, outputFile);
-        outputFile.close();
-        cout << "Rezultatai issaugoti faile: " << fileName << endl;
+        printOrSaveResults(studentai, pasirinkimas);
+        cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt\n";
     }
 
     return 0;
