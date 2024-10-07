@@ -12,6 +12,5 @@ struct Studentas {
 };
 
 void skaitytiIsFailo(std::vector<Studentas>& studentai, const std::string& fileName);
-bool compareByLastName(const Studentas& a, const Studentas& b);
 
 #endif // STUDENTAS_H
