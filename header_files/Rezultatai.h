@@ -4,11 +4,10 @@
 #include <vector>
 
 struct Rezultatai {
-    std::vector<int> namuDarbuRezultatai;
-    int egzaminoRezultatas;
+    std::vector<double> namuDarbuRezultatai;
+    double egzaminoRezultatas;
 
     Rezultatai() : egzaminoRezultatas(0) {}
 };
 
-#endif
-
+#endif //REZULTATAI_H
