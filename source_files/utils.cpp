@@ -3,6 +3,8 @@
 #include <numeric>
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -20,15 +22,20 @@ bool compareByLastName(const Studentas& a, const Studentas& b) {
     return a.pavarde < b.pavarde;
 }
 
+void printOrSaveResults(const std::vector<Studentas>& studentai, int pasirinkimas) {
+    ofstream neislaikeFile("neislaike.txt");
+    ofstream islaikeFile("islaike.txt");
 
-void printOrSaveResults(const std::vector<Studentas>& studentai, int pasirinkimas, std::ostream& out) {
-    out << "\n" << std::setw(15) << std::left << "Vardas"
+    neislaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
         << std::setw(15) << std::left << "Pavarde"
         << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
+    neislaikeFile << std::string(50, '-') << std::endl;
 
-    out << std::string(50, '-') << std::endl;
+    islaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
+        << std::setw(15) << std::left << "Pavarde"
+        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
+    islaikeFile << std::string(50, '-') << std::endl;
 
-    out << std::fixed << std::setprecision(2);
     for (const auto& studentas : studentai) {
         double galutinisVid;
         if (pasirinkimas == 1) {
@@ -41,8 +48,26 @@ void printOrSaveResults(const std::vector<Studentas>& studentai, int pasirinkima
             galutinisVid = 0.4 * namuDarbuMediana + 0.6 * studentas.rezultatai.egzaminoRezultatas;
         }
 
-        out << std::setw(15) << std::left << studentas.vardas
-            << std::setw(15) << std::left << studentas.pavarde
-            << galutinisVid << std::endl;
+        if (galutinisVid < 5.0) {
+            neislaikeFile << std::setw(15) << std::left << studentas.vardas
+                << std::setw(15) << std::left << studentas.pavarde
+                << fixed << setprecision(2) << galutinisVid << std::endl;
+
+            cout << std::setw(15) << std::left << studentas.vardas
+                << std::setw(15) << std::left << studentas.pavarde
+                << fixed << setprecision(2) << galutinisVid << std::endl;
+        }
+        else {
+            islaikeFile << std::setw(15) << std::left << studentas.vardas
+                << std::setw(15) << std::left << studentas.pavarde
+                << fixed << setprecision(2) << galutinisVid << std::endl;
+
+            cout << std::setw(15) << std::left << studentas.vardas
+                << std::setw(15) << std::left << studentas.pavarde
+                << fixed << setprecision(2) << galutinisVid << std::endl;
+        }
     }
+
+    neislaikeFile.close();
+    islaikeFile.close();
 }
