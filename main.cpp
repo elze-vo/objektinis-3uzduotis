@@ -87,7 +87,30 @@ int main() {
         }
     } while (true);
 
-    sort(studentai.begin(), studentai.end(), compareByLastName);
+    int sortOption;
+    do {
+        cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
+        cout << "1 - Rikiuoti mazejimo tvarka\n";
+        cout << "2 - Rikiuoti didejimo tvarka\n";
+        cout << "Iveskite pasirinkima: ";
+        cin >> sortOption;
+
+        if (cin.fail() || (sortOption < 1 || sortOption > 2)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
+        }
+        else {
+            break;
+        }
+    } while (true);
+
+    if (sortOption == 1) {
+        sort(studentai.begin(), studentai.end(), compareByResultsAscending);
+    }
+    else {
+        sort(studentai.begin(), studentai.end(), compareByResultsDescending);
+    }
 
     int outputOption;
     do {
@@ -109,17 +132,10 @@ int main() {
     } while (true);
 
     cout << fixed << setprecision(2);
+    printOrSaveResults(studentai, pasirinkimas, outputOption);
 
-    if (outputOption == 1) {
-        printOrSaveResults(studentai, pasirinkimas);
-    }
-    else if (outputOption == 2) {
-        printOrSaveResults(studentai, pasirinkimas);
-        cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt\n";
-    }
-    else if (outputOption == 3) {
-        printOrSaveResults(studentai, pasirinkimas);
-        cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt\n";
+    if (outputOption == 2 || outputOption == 3) {
+        cout << "Rezultatai issaugoti failuose neislaike.txt ir islaike.txt\n";
     }
 
     return 0;
