@@ -8,16 +8,6 @@
 
 using namespace std;
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include "Studentas.h"
-#include "utils.h"
-
-using namespace std;
-
 void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
     ifstream file(fileName);
     if (!file) {
