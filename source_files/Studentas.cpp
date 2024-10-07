@@ -2,6 +2,17 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <string>
+#include "Studentas.h"
+#include "utils.h"
+
+using namespace std;
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
 #include "Studentas.h"
 #include "utils.h"
 
@@ -14,8 +25,16 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
         return;
     }
 
+    stringstream buffer;
+    buffer << file.rdbuf();
+    string fileContent = buffer.str();
+
+    file.close();
+
+    istringstream iss(fileContent);
     string line;
-    getline(file, line);
+
+    getline(iss, line);
     istringstream headerStream(line);
     string headerWord;
     int numHomework = 0;
@@ -26,93 +45,47 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
         }
     }
 
-    while (getline(file, line)) {
-        istringstream iss(line);
+    while (getline(iss, line)) {
+        istringstream studentStream(line);
         Studentas studentas;
-        string temp;
+        studentStream >> studentas.vardas >> studentas.pavarde;
 
-        iss >> studentas.vardas >> studentas.pavarde;
+        studentas.rezultatai.namuDarbuRezultatai.reserve(numHomework);
 
-        // Process homework grades
         for (int i = 0; i < numHomework; ++i) {
-            bool validInput = false;
-            while (!validInput && iss >> temp) {
+            string temp;
+            if (studentStream >> temp) {
                 try {
-                    int rezultatas = stoi(temp);
+                    double rezultatas = stod(temp);
                     if (rezultatas >= 0 && rezultatas <= 10) {
                         studentas.rezultatai.namuDarbuRezultatai.push_back(rezultatas);
-                        validInput = true;
                     }
                     else {
                         throw out_of_range("Namu darbo rezultatas turi buti tarp 0 ir 10.");
                     }
                 }
                 catch (const invalid_argument&) {
-                    cout << "Klaida: '" << temp << "' nera skaicius. Iveskite tinkama namu darbo rezultata: ";
-                }
-                catch (const out_of_range&) {
-                    cout << "Klaida: '" << temp << "' nera tinkamas namu darbo rezultatas (turi buti 0-10). Bandykite dar karta: ";
-                }
-
-                while (!validInput) {
-                    cin >> temp;
-                    try {
-                        int validResult = stoi(temp);
-                        if (validResult >= 0 && validResult <= 10) {
-                            studentas.rezultatai.namuDarbuRezultatai.push_back(validResult);
-                            validInput = true;
-                        }
-                        else {
-                            cout << "Netinkamas diapazonas (0-10). Bandykite dar karta: ";
-                        }
-                    }
-                    catch (const invalid_argument&) {
-                        cout << "Netinkamas ivedimas. Bandykite dar karta: ";
-                    }
+                    cout << "Neteisingas namu darbo rezultatas: " << temp << endl;
                 }
             }
         }
 
-        // Process exam grade
-        bool validInput = false;
-        while (!validInput && iss >> temp) {
+        string temp;
+        if (studentStream >> temp) {
             try {
-                int rezultatas = stoi(temp);
+                double rezultatas = stod(temp);
                 if (rezultatas >= 0 && rezultatas <= 10) {
                     studentas.rezultatai.egzaminoRezultatas = rezultatas;
-                    validInput = true;
                 }
                 else {
                     throw out_of_range("Egzamino rezultatas turi buti tarp 0 ir 10.");
                 }
             }
             catch (const invalid_argument&) {
-                cout << "Klaida: '" << temp << "' nera skaicius. Iveskite tinkama egzamino rezultata: ";
-            }
-            catch (const out_of_range&) {
-                cout << "Klaida: '" << temp << "' nera tinkamas egzamino rezultatas (turi buti 0-10). Bandykite dar karta: ";
-            }
-
-            while (!validInput) {
-                cin >> temp;
-                try {
-                    int validResult = stoi(temp);
-                    if (validResult >= 0 && validResult <= 10) {
-                        studentas.rezultatai.egzaminoRezultatas = validResult;
-                        validInput = true;
-                    }
-                    else {
-                        cout << "Netinkamas diapazonas (0-10). Bandykite dar karta: ";
-                    }
-                }
-                catch (const invalid_argument&) {
-                    cout << "Netinkamas ivedimas. Bandykite dar karta: ";
-                }
+                cout << "Neteisingas egzamino rezultatas: " << temp << endl;
             }
         }
 
         studentai.push_back(studentas);
     }
-
-    file.close();
 }
