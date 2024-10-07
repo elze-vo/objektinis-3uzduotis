@@ -8,7 +8,7 @@
 
 using namespace std;
 
-double calculateMedian(vector<int>& grades) {
+double calculateMedian(vector<double>& grades) {
     sort(grades.begin(), grades.end());
     size_t size = grades.size();
     if (size == 0) return 0.0;
@@ -18,13 +18,39 @@ double calculateMedian(vector<int>& grades) {
     return grades[size / 2];
 }
 
-bool compareByLastName(const Studentas& a, const Studentas& b) {
-    return a.pavarde < b.pavarde;
+double calculateFinalGrade(const Studentas& studentas, int pasirinkimas) {
+    if (pasirinkimas == 1) {
+        if (studentas.rezultatai.namuDarbuRezultatai.empty()) {
+            return 0.0;
+        }
+        double namuDarbuVidurkis = std::accumulate(studentas.rezultatai.namuDarbuRezultatai.begin(), studentas.rezultatai.namuDarbuRezultatai.end(), 0.0) / studentas.rezultatai.namuDarbuRezultatai.size();
+        return 0.4 * namuDarbuVidurkis + 0.6 * studentas.rezultatai.egzaminoRezultatas;
+    }
+    else {
+        std::vector<double> namuDarbuCopy = studentas.rezultatai.namuDarbuRezultatai;
+        double namuDarbuMediana = calculateMedian(namuDarbuCopy);
+        return 0.4 * namuDarbuMediana + 0.6 * studentas.rezultatai.egzaminoRezultatas;
+    }
 }
 
-void printOrSaveResults(const std::vector<Studentas>& studentai, int pasirinkimas) {
-    ofstream neislaikeFile("neislaike.txt");
-    ofstream islaikeFile("islaike.txt");
+bool compareByResultsAscending(const Studentas& a, const Studentas& b) {
+    return calculateFinalGrade(a, 1) < calculateFinalGrade(b, 1);
+}
+
+bool compareByResultsDescending(const Studentas& a, const Studentas& b) {
+    return calculateFinalGrade(a, 1) > calculateFinalGrade(b, 1);
+}
+
+void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int outputOption) {
+    if (pasirinkimas == 1) {
+        std::sort(studentai.begin(), studentai.end(), compareByResultsAscending);
+    }
+    else {
+        std::sort(studentai.begin(), studentai.end(), compareByResultsDescending);
+    }
+
+    std::ofstream neislaikeFile("neislaike.txt");
+    std::ofstream islaikeFile("islaike.txt");
 
     neislaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
         << std::setw(15) << std::left << "Pavarde"
@@ -37,34 +63,29 @@ void printOrSaveResults(const std::vector<Studentas>& studentai, int pasirinkima
     islaikeFile << std::string(50, '-') << std::endl;
 
     for (const auto& studentas : studentai) {
-        double galutinisVid;
-        if (pasirinkimas == 1) {
-            double namuDarbuVidurkis = std::accumulate(studentas.rezultatai.namuDarbuRezultatai.begin(), studentas.rezultatai.namuDarbuRezultatai.end(), 0.0) / studentas.rezultatai.namuDarbuRezultatai.size();
-            galutinisVid = 0.4 * namuDarbuVidurkis + 0.6 * studentas.rezultatai.egzaminoRezultatas;
-        }
-        else {
-            std::vector<int> namuDarbuCopy = studentas.rezultatai.namuDarbuRezultatai;
-            double namuDarbuMediana = calculateMedian(namuDarbuCopy);
-            galutinisVid = 0.4 * namuDarbuMediana + 0.6 * studentas.rezultatai.egzaminoRezultatas;
-        }
+        double galutinisVid = calculateFinalGrade(studentas, pasirinkimas);
 
         if (galutinisVid < 5.0) {
             neislaikeFile << std::setw(15) << std::left << studentas.vardas
                 << std::setw(15) << std::left << studentas.pavarde
                 << fixed << setprecision(2) << galutinisVid << std::endl;
 
-            cout << std::setw(15) << std::left << studentas.vardas
-                << std::setw(15) << std::left << studentas.pavarde
-                << fixed << setprecision(2) << galutinisVid << std::endl;
+            if (outputOption == 1 || outputOption == 3) {
+                std::cout << std::setw(15) << std::left << studentas.vardas
+                    << std::setw(15) << std::left << studentas.pavarde
+                    << fixed << setprecision(2) << galutinisVid << std::endl;
+            }
         }
         else {
             islaikeFile << std::setw(15) << std::left << studentas.vardas
                 << std::setw(15) << std::left << studentas.pavarde
                 << fixed << setprecision(2) << galutinisVid << std::endl;
 
-            cout << std::setw(15) << std::left << studentas.vardas
-                << std::setw(15) << std::left << studentas.pavarde
-                << fixed << setprecision(2) << galutinisVid << std::endl;
+            if (outputOption == 1 || outputOption == 3) {
+                std::cout << std::setw(15) << std::left << studentas.vardas
+                    << std::setw(15) << std::left << studentas.pavarde
+                    << fixed << setprecision(2) << galutinisVid << std::endl;
+            }
         }
     }
 
