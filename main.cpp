@@ -22,10 +22,11 @@ int main() {
         cout << "1 - Prideti studentus is failo\n";
         cout << "2 - Prideti studentus ranka\n";
         cout << "3 - Generuoti studentus atsitiktinai\n";
+        cout << "4 - Sukurti studentu faila\n";
         cout << "Iveskite pasirinkima: ";
         cin >> pasirinkimas;
 
-        if (cin.fail() || (pasirinkimas < 1 || pasirinkimas > 3)) {
+        if (cin.fail() || (pasirinkimas < 1 || pasirinkimas > 4)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
@@ -65,6 +66,22 @@ int main() {
     case 3: {
         addStudentsRandomly(studentai);
         break;
+    }
+    case 4: {
+        int studentuKiekis, pazymiuKiekis;
+        string failoPavadinimas;
+
+        cout << "Iveskite studentu kieki: ";
+        cin >> studentuKiekis;
+
+        cout << "Iveskite pazymiu kieki: ";
+        cin >> pazymiuKiekis;
+
+        cout << "Iveskite failo pavadinima: ";
+        cin >> failoPavadinimas;
+
+        createStudentFile(studentuKiekis, pazymiuKiekis, failoPavadinimas);
+        return 0;
     }
     }
 
