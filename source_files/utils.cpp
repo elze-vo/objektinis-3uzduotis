@@ -5,6 +5,10 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
 
 using namespace std;
 
@@ -91,4 +95,44 @@ void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int
 
     neislaikeFile.close();
     islaikeFile.close();
+}
+
+void createStudentFile(int studentCount, int gradeCount, const std::string& fileName) {
+    using namespace std::chrono;
+
+    auto start = high_resolution_clock::now();
+
+    ofstream outFile(fileName);
+    if (!outFile) {
+        cout << "Nepavyko sukurti failo: " << fileName << endl;
+        return;
+    }
+
+    outFile << left << setw(20) << "Vardas" << setw(20) << "Pavarde";
+
+    for (int i = 1; i <= gradeCount; ++i) {
+        outFile << setw(10) << "ND" + to_string(i);
+    }
+    outFile << setw(10) << "Egz." << endl;
+
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 1; i <= studentCount; ++i) {
+        outFile << left << setw(20) << ("Vardas" + to_string(i)) << setw(20) << ("Pavarde" + to_string(i));
+
+        for (int j = 0; j < gradeCount; ++j) {
+            outFile << setw(10) << (rand() % 10 + 1);
+        }
+
+        outFile << setw(10) << (rand() % 10 + 1);
+        outFile << endl;
+    }
+
+    outFile.close();
+
+    auto end = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(end - start).count();
+
+    cout << "Failas sukurtas: " << fileName << endl;
+    cout << "Failo kurimo laikas: " << duration << " ms" << endl;
 }
