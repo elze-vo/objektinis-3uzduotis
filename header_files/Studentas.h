@@ -11,6 +11,7 @@ struct Studentas {
     Rezultatai rezultatai;
 };
 
+void correctInvalidData(double& rezultatas, const std::string& fieldName);
 void skaitytiIsFailo(std::vector<Studentas>& studentai, const std::string& fileName);
 
 #endif // STUDENTAS_H
