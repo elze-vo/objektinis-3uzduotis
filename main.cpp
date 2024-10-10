@@ -56,6 +56,7 @@ int main() {
             else {
                 inputFile.close();
                 skaitytiIsFailo(studentai, failoPavadinimas);
+                processStudentData(studentai);
                 break;
             }
         } while (true);
@@ -64,10 +65,12 @@ int main() {
     }
     case 2: {
         addStudentsManually(studentai);
+        processStudentData(studentai);
         break;
     }
     case 3: {
         addStudentsRandomly(studentai);
+        processStudentData(studentai);
         break;
     }
     case 4: {
@@ -80,7 +83,7 @@ int main() {
         cout << "Iveskite pazymiu kieki: ";
         cin >> pazymiuKiekis;
 
-        cout << "Iveskite failo pavadinima: ";
+        cout << "Iveskite failo pavadinima (pvz., studentai.txt): ";
         cin >> failoPavadinimas;
 
         createStudentFile(studentuKiekis, pazymiuKiekis, failoPavadinimas);
@@ -163,6 +166,12 @@ int main() {
 
             cout << "Ar norite atidaryti kita faila greicio testavimui? (y/n): ";
             cin >> pasirinkimasTestuoti;
+
+            while (pasirinkimasTestuoti != 'y' && pasirinkimasTestuoti != 'n') {
+                cout << "Neteisingas pasirinkimas. Iveskite 'y' arba 'n': ";
+                cin >> pasirinkimasTestuoti;
+            }
+
             if (pasirinkimasTestuoti == 'y') {
                 studentai.clear();
             }
@@ -170,76 +179,6 @@ int main() {
 
         return 0;
     }
-    }
-
-    if (studentai.empty()) {
-        cout << "Nera studentu.\n";
-        return 1;
-    }
-
-    do {
-        cout << "Pasirinkite (1 - Vidurkis, 2 - Mediana): ";
-        cin >> pasirinkimas;
-
-        if (cin.fail() || (pasirinkimas != 1 && pasirinkimas != 2)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            break;
-        }
-    } while (true);
-
-    int sortOption;
-    do {
-        cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
-        cout << "1 - Rikiuoti mazejimo tvarka\n";
-        cout << "2 - Rikiuoti didejimo tvarka\n";
-        cout << "Iveskite pasirinkima: ";
-        cin >> sortOption;
-
-        if (cin.fail() || (sortOption < 1 || sortOption > 2)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            break;
-        }
-    } while (true);
-
-    if (sortOption == 1) {
-        sort(studentai.begin(), studentai.end(), compareByResultsAscending);
-    }
-    else {
-        sort(studentai.begin(), studentai.end(), compareByResultsDescending);
-    }
-
-    int outputOption;
-    do {
-        cout << "Pasirinkite rezultatu atvaizdavimo buda:\n";
-        cout << "1 - Spausdinti ekrane\n";
-        cout << "2 - Issaugoti failuose (islaike.txt ir neislaike.txt)\n";
-        cout << "3 - Spausdinti ir issaugoti failuose\n";
-        cout << "Iveskite pasirinkima: ";
-        cin >> outputOption;
-
-        if (cin.fail() || (outputOption < 1 || outputOption > 3)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            break;
-        }
-    } while (true);
-
-    cout << fixed << setprecision(2);
-    printOrSaveResults(studentai, pasirinkimas, outputOption);
-
-    if (outputOption == 2 || outputOption == 3) {
-        cout << "Rezultatai issaugoti failuose neislaike.txt ir islaike.txt\n";
     }
 
     return 0;
