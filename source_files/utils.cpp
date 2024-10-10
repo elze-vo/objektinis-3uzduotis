@@ -136,3 +136,72 @@ void createStudentFile(int studentCount, int gradeCount, const std::string& file
     cout << "Failas sukurtas: " << fileName << endl;
     cout << "Failo kurimo laikas: " << duration << " ms" << endl;
 }
+
+void processStudentData(vector<Studentas>& studentai) {
+    int gradeCalculationOption;
+    do {
+        cout << "Pasirinkite, kaip skaiciuoti galutini bala:\n";
+        cout << "1 - Vidurkis\n";
+        cout << "2 - Mediana\n";
+        cout << "Iveskite pasirinkima: ";
+        cin >> gradeCalculationOption;
+
+        if (cin.fail() || (gradeCalculationOption < 1 || gradeCalculationOption > 2)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
+        }
+        else {
+            break;
+        }
+    } while (true);
+
+    int sortOption;
+    do {
+        cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
+        cout << "1 - Rikiuoti mazejimo tvarka\n";
+        cout << "2 - Rikiuoti didejimo tvarka\n";
+        cout << "Iveskite pasirinkima: ";
+        cin >> sortOption;
+
+        if (cin.fail() || (sortOption < 1 || sortOption > 2)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
+        }
+        else {
+            break;
+        }
+    } while (true);
+
+    int outputOption;
+    do {
+        cout << "Pasirinkite isvedimo buda:\n";
+        cout << "1 - Spausdinti i ekrana\n";
+        cout << "2 - Issaugoti i failus\n";
+        cout << "3 - Spausdinti i ekrana ir issaugoti i failus\n";
+        cout << "Iveskite pasirinkima: ";
+        cin >> outputOption;
+
+        if (cin.fail() || (outputOption < 1 || outputOption > 3)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
+        }
+        else {
+            if (outputOption == 2 || outputOption == 3) {
+                cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt.\n";
+            }
+            break;
+        }
+    } while (true);
+
+    if (sortOption == 1) {
+        sort(studentai.begin(), studentai.end(), compareByResultsDescending);
+    }
+    else {
+        sort(studentai.begin(), studentai.end(), compareByResultsAscending);
+    }
+
+    printOrSaveResults(studentai, gradeCalculationOption, outputOption);
+}
