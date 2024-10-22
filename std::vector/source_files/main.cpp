@@ -6,6 +6,7 @@
 #include <limits>
 #include <fstream>
 #include <chrono>
+#include <cmath>
 #include "Studentas.h"
 #include "Rezultatai.h"
 #include "utils.h"
@@ -118,8 +119,8 @@ int main() {
             int sortOption;
             do {
                 cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
-                cout << "1 - Rikiuoti mazejimo tvarka\n";
-                cout << "2 - Rikiuoti didejimo tvarka\n";
+                cout << "1 - Rikiuoti didejimo tvarka\n";
+                cout << "2 - Rikiuoti mazejimo tvarka\n";
                 cout << "Iveskite pasirinkima: ";
                 cin >> sortOption;
 
@@ -138,7 +139,8 @@ int main() {
             auto startReading = high_resolution_clock::now();
             skaitytiIsFailo(studentai, failoPavadinimas);
             auto endReading = high_resolution_clock::now();
-            auto readingDuration = duration_cast<milliseconds>(endReading - startReading).count();
+            auto readingDurationMicroseconds = duration_cast<microseconds>(endReading - startReading).count();
+            double readingDurationMilliseconds = std::round(readingDurationMicroseconds / 100.0) / 10.0;
 
             auto startSorting = high_resolution_clock::now();
             if (sortOption == 1) {
@@ -148,21 +150,26 @@ int main() {
                 sort(studentai.begin(), studentai.end(), compareByResultsAscending);
             }
             auto endSorting = high_resolution_clock::now();
-            auto sortingDuration = duration_cast<milliseconds>(endSorting - startSorting).count();
+            auto sortingDurationMicroseconds = duration_cast<microseconds>(endSorting - startSorting).count();
+            double sortingDurationMilliseconds = std::round(sortingDurationMicroseconds / 100.0) / 10.0;
 
             auto startWriting = high_resolution_clock::now();
             printOrSaveResults(studentai, gradeCalculationOption, 2);
             auto endWriting = high_resolution_clock::now();
-            auto writingDuration = duration_cast<milliseconds>(endWriting - startWriting).count();
+            auto writingDurationMicroseconds = duration_cast<microseconds>(endWriting - startWriting).count();
+            double writingDurationMilliseconds = std::round(writingDurationMicroseconds / 100.0) / 10.0;
 
             auto endTotal = high_resolution_clock::now();
-            auto totalDuration = duration_cast<milliseconds>(endTotal - startTotal).count();
+            auto totalDurationMicroseconds = duration_cast<microseconds>(endTotal - startTotal).count();
+            double totalDurationMilliseconds = std::round(totalDurationMicroseconds / 100.0) / 10.0;
+
+
 
             cout << "Failas atidarytas: " << failoPavadinimas << "\n";
-            cout << "Laikas nuskaitant faila: " << readingDuration << " ms\n";
-            cout << "Laikas rikiuojant: " << sortingDuration << " ms\n";
-            cout << "Laikas issaugant rezultatus: " << writingDuration << " ms\n";
-            cout << "Bendras laikas: " << totalDuration << " ms\n";
+            cout << "Laikas nuskaitant faila: " << readingDurationMilliseconds << " ms\n";
+            cout << "Laikas rikiuojant: " << sortingDurationMilliseconds << " ms\n";
+            cout << "Laikas issaugant rezultatus: " << writingDurationMilliseconds << " ms\n";
+            cout << "Bendras laikas: " << totalDurationMilliseconds << " ms\n";
 
             cout << "Ar norite atidaryti kita faila greicio testavimui? (y/n): ";
             cin >> pasirinkimasTestuoti;
