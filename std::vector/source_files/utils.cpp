@@ -58,13 +58,23 @@ void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int
 
     neislaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
         << std::setw(15) << std::left << "Pavarde"
+        << std::setw(20) << std::left << "Vieta atmintyje"
         << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-    neislaikeFile << std::string(50, '-') << std::endl;
+    neislaikeFile << std::string(70, '-') << std::endl;
 
     islaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
         << std::setw(15) << std::left << "Pavarde"
+        << std::setw(20) << std::left << "Vieta atmintyje"
         << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-    islaikeFile << std::string(50, '-') << std::endl;
+    islaikeFile << std::string(70, '-') << std::endl;
+
+    if (outputOption == 1 || outputOption == 3) {
+        std::cout << "\n" << std::setw(15) << std::left << "Vardas"
+            << std::setw(15) << std::left << "Pavarde"
+            << std::setw(20) << std::left << "Vieta atmintyje"
+            << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
+        std::cout << std::string(70, '-') << std::endl;
+    }
 
     for (const auto& studentas : studentai) {
         double galutinisVid = calculateFinalGrade(studentas, pasirinkimas);
@@ -72,22 +82,26 @@ void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int
         if (galutinisVid < 5.0) {
             neislaikeFile << std::setw(15) << std::left << studentas.vardas
                 << std::setw(15) << std::left << studentas.pavarde
+                << std::setw(20) << std::left << &studentas
                 << fixed << setprecision(2) << galutinisVid << std::endl;
 
             if (outputOption == 1 || outputOption == 3) {
                 std::cout << std::setw(15) << std::left << studentas.vardas
                     << std::setw(15) << std::left << studentas.pavarde
+                    << std::setw(20) << std::left << &studentas
                     << fixed << setprecision(2) << galutinisVid << std::endl;
             }
         }
         else {
             islaikeFile << std::setw(15) << std::left << studentas.vardas
                 << std::setw(15) << std::left << studentas.pavarde
+                << std::setw(20) << std::left << &studentas
                 << fixed << setprecision(2) << galutinisVid << std::endl;
 
             if (outputOption == 1 || outputOption == 3) {
                 std::cout << std::setw(15) << std::left << studentas.vardas
                     << std::setw(15) << std::left << studentas.pavarde
+                    << std::setw(20) << std::left << &studentas
                     << fixed << setprecision(2) << galutinisVid << std::endl;
             }
         }
@@ -96,6 +110,7 @@ void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int
     neislaikeFile.close();
     islaikeFile.close();
 }
+
 
 void createStudentFile(int studentCount, int gradeCount, const std::string& fileName) {
     using namespace std::chrono;
@@ -159,8 +174,8 @@ void processStudentData(vector<Studentas>& studentai) {
     int sortOption;
     do {
         cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
-        cout << "1 - Rikiuoti mazejimo tvarka\n";
-        cout << "2 - Rikiuoti didejimo tvarka\n";
+        cout << "1 - Rikiuoti didejimo tvarka\n";
+        cout << "2 - Rikiuoti mazejimo tvarka\n";
         cout << "Iveskite pasirinkima: ";
         cin >> sortOption;
 
