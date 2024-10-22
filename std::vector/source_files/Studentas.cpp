@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void correctInvalidData(double& rezultatas, const string& fieldName) {
+void correctInvalidData(int& rezultatas, const string& fieldName) {
     while (cin.fail() || rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -19,23 +19,27 @@ void correctInvalidData(double& rezultatas, const string& fieldName) {
 }
 
 void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
-    ifstream file(fileName, ios::in | ios::binary | ios::ate);
+    ifstream file(fileName);
     if (!file) {
         cout << "Nepavyko atidaryti failo: " << fileName << endl;
         return;
     }
 
-    size_t fileSize = file.tellg();
+    string line;
+    size_t lineCount = 0;
+
+    getline(file, line);
+
+    while (getline(file, line)) {
+        lineCount++;
+    }
+
+    studentai.reserve(lineCount);
+
+    file.clear();
     file.seekg(0, ios::beg);
 
-    vector<char> buffer(fileSize);
-    file.read(buffer.data(), fileSize);
-    file.close();
-
-    istringstream iss(string(buffer.begin(), buffer.end()));
-    string line;
-
-    getline(iss, line);
+    getline(file, line);
     istringstream headerStream(line);
     string headerWord;
     int numHomework = 0;
@@ -46,7 +50,7 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
         }
     }
 
-    while (getline(iss, line)) {
+    while (getline(file, line)) {
         istringstream studentStream(line);
         Studentas studentas;
         studentStream >> studentas.vardas >> studentas.pavarde;
@@ -58,14 +62,14 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
             studentStream >> temp;
 
             try {
-                double rezultatas = stod(temp);
-                if (rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
+                int rezultatas = stoi(temp);
+                if (rezultatas < 0 || rezultatas > 10) {
                     throw out_of_range("Invalid value");
                 }
                 studentas.rezultatai.namuDarbuRezultatai.push_back(rezultatas);
             }
             catch (const exception&) {
-                double validResult;
+                int validResult;
                 cout << "Neteisingas namu darbo rezultatas: " << temp << endl;
                 cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
                 cin >> validResult;
@@ -78,14 +82,14 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
         studentStream >> tempExam;
 
         try {
-            double egzaminas = stod(tempExam);
-            if (egzaminas < 0 || egzaminas > 10 || egzaminas != static_cast<int>(egzaminas)) {
+            int egzaminas = stoi(tempExam);
+            if (egzaminas < 0 || egzaminas > 10) {
                 throw out_of_range("Invalid value");
             }
             studentas.rezultatai.egzaminoRezultatas = egzaminas;
         }
         catch (const exception&) {
-            double validExam;
+            int validExam;
             cout << "Neteisingas egzamino rezultatas: " << tempExam << endl;
             cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
             cin >> validExam;
@@ -95,4 +99,6 @@ void skaitytiIsFailo(vector<Studentas>& studentai, const string& fileName) {
 
         studentai.push_back(studentas);
     }
+
+    file.close();
 }
