@@ -1,4 +1,0 @@
-Vardas                   Pavarde                    ND1       ND2       ND3       ND4       ND5      Egz.
-bb                       ccc                         8         9        10         6        10         9
-cc                       aaa                         7        10         8         5         4         6
-aa                       bbb                         6         5         8         7         9         8
