@@ -63,16 +63,21 @@ int main() {
             }
         } while (true);
 
+        system("pause");
         break;
     }
     case 2: {
         addStudentsManually(studentai);
         processStudentData(studentai);
+
+        system("pause");
         break;
     }
     case 3: {
         addStudentsRandomly(studentai);
         processStudentData(studentai);
+
+        system("pause");
         break;
     }
     case 4: {
@@ -89,6 +94,8 @@ int main() {
         cin >> failoPavadinimas;
 
         createStudentFile(studentuKiekis, pazymiuKiekis, failoPavadinimas);
+
+        system("pause");
         return 0;
     }
     case 5: {
