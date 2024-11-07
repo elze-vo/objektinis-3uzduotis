@@ -12,17 +12,18 @@
 
 using namespace std;
 
-
-double calculateMedian(std::list<double>& grades) {
-    grades.sort();
-    size_t size = grades.size();
+double calculateMedian(list<double>& grades) {
+    list<double> sortedGrades = grades;
+    sortedGrades.sort();
+    size_t size = sortedGrades.size();
     if (size == 0) return 0.0;
 
-    auto it = std::next(grades.begin(), size / 2);
+    auto it = sortedGrades.begin();
+    advance(it, size / 2);
 
     if (size % 2 == 0) {
-        auto itPrev = std::prev(it);
-        return (*it + *itPrev) / 2.0;
+        auto itPrev = prev(it);
+        return (*itPrev + *it) / 2.0;
     }
     return *it;
 }
@@ -36,7 +37,7 @@ double calculateFinalGrade(const Studentas& studentas, int pasirinkimas) {
         return 0.4 * namuDarbuVidurkis + 0.6 * studentas.rezultatai.egzaminoRezultatas;
     }
     else {
-        std::list<double> namuDarbuCopy = studentas.rezultatai.namuDarbuRezultatai;
+        list<double> namuDarbuCopy(studentas.rezultatai.namuDarbuRezultatai.begin(), studentas.rezultatai.namuDarbuRezultatai.end());
         double namuDarbuMediana = calculateMedian(namuDarbuCopy);
         return 0.4 * namuDarbuMediana + 0.6 * studentas.rezultatai.egzaminoRezultatas;
     }
@@ -50,6 +51,33 @@ bool compareByResultsDescending(const Studentas& a, const Studentas& b) {
     return calculateFinalGrade(a, 1) > calculateFinalGrade(b, 1);
 }
 
+void writeResultsToFile(std::list<Studentas>& studentai, const std::string& filename, int pasirinkimas, int sortOption) {
+
+    if (sortOption == 1) {
+        studentai.sort(compareByResultsAscending);
+    }
+    else {
+        studentai.sort(compareByResultsDescending);
+    }
+
+    std::ofstream outFile(filename);
+
+    outFile << "\n" << std::setw(15) << std::left << "Vardas"
+        << std::setw(15) << std::left << "Pavarde"
+        << std::setw(20) << std::left << "Vieta atmintyje"
+        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
+    outFile << std::string(70, '-') << std::endl;
+
+    for (const auto& studentas : studentai) {
+        outFile << std::setw(15) << std::left << studentas.vardas
+            << std::setw(15) << std::left << studentas.pavarde
+            << std::setw(20) << std::left << &studentas
+            << std::fixed << std::setprecision(2) << studentas.finalGrade << std::endl;
+    }
+
+    outFile.close();
+}
+
 void printOrSaveResults(std::list<Studentas>& studentai, int pasirinkimas, int outputOption) {
     if (pasirinkimas == 1) {
         studentai.sort(compareByResultsAscending);
@@ -58,64 +86,22 @@ void printOrSaveResults(std::list<Studentas>& studentai, int pasirinkimas, int o
         studentai.sort(compareByResultsDescending);
     }
 
-    std::ofstream neislaikeFile("neislaike.txt");
-    std::ofstream islaikeFile("islaike.txt");
-
-    neislaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
-        << std::setw(15) << std::left << "Pavarde"
-        << std::setw(20) << std::left << "Vieta atmintyje"
-        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-    neislaikeFile << std::string(70, '-') << std::endl;
-
-    islaikeFile << "\n" << std::setw(15) << std::left << "Vardas"
-        << std::setw(15) << std::left << "Pavarde"
-        << std::setw(20) << std::left << "Vieta atmintyje"
-        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-    islaikeFile << std::string(70, '-') << std::endl;
-
     if (outputOption == 1 || outputOption == 3) {
         std::cout << "\n" << std::setw(15) << std::left << "Vardas"
             << std::setw(15) << std::left << "Pavarde"
             << std::setw(20) << std::left << "Vieta atmintyje"
             << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
         std::cout << std::string(70, '-') << std::endl;
-    }
 
-    for (const auto& studentas : studentai) {
-        double galutinisVid = calculateFinalGrade(studentas, pasirinkimas);
-
-        if (galutinisVid < 5.0) {
-            neislaikeFile << std::setw(15) << std::left << studentas.vardas
+        for (const auto& studentas : studentai) {
+            double galutinisVid = calculateFinalGrade(studentas, pasirinkimas);
+            std::cout << std::setw(15) << std::left << studentas.vardas
                 << std::setw(15) << std::left << studentas.pavarde
                 << std::setw(20) << std::left << &studentas
-                << fixed << setprecision(2) << galutinisVid << std::endl;
-
-            if (outputOption == 1 || outputOption == 3) {
-                std::cout << std::setw(15) << std::left << studentas.vardas
-                    << std::setw(15) << std::left << studentas.pavarde
-                    << std::setw(20) << std::left << &studentas
-                    << fixed << setprecision(2) << galutinisVid << std::endl;
-            }
-        }
-        else {
-            islaikeFile << std::setw(15) << std::left << studentas.vardas
-                << std::setw(15) << std::left << studentas.pavarde
-                << std::setw(20) << std::left << &studentas
-                << fixed << setprecision(2) << galutinisVid << std::endl;
-
-            if (outputOption == 1 || outputOption == 3) {
-                std::cout << std::setw(15) << std::left << studentas.vardas
-                    << std::setw(15) << std::left << studentas.pavarde
-                    << std::setw(20) << std::left << &studentas
-                    << fixed << setprecision(2) << galutinisVid << std::endl;
-            }
+                << std::fixed << std::setprecision(2) << galutinisVid << std::endl;
         }
     }
-
-    neislaikeFile.close();
-    islaikeFile.close();
 }
-
 
 void createStudentFile(int studentCount, int gradeCount, const std::string& fileName) {
     using namespace std::chrono;
@@ -215,13 +201,6 @@ void processStudentData(list<Studentas>& studentai) {
             break;
         }
     } while (true);
-
-    if (sortOption == 1) {
-        studentai.sort(compareByResultsDescending);
-    }
-    else {
-        studentai.sort(compareByResultsAscending);
-    }
 
     printOrSaveResults(studentai, gradeCalculationOption, outputOption);
 }
