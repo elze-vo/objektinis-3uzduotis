@@ -9,6 +9,7 @@ struct Studentas {
     std::string vardas;
     std::string pavarde;
     Rezultatai rezultatai;
+    double finalGrade;
 };
 
 void correctInvalidData(int& rezultatas, const std::string& fieldName);
