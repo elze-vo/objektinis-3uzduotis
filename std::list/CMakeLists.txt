@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+project(studentuAppsasList)
+include_directories(Include)
+file(GLOB SOURCES "src/*.cpp")
+add_executable(studentuAppsasList ${SOURCES})
