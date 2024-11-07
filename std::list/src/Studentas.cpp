@@ -26,16 +26,6 @@ void skaitytiIsFailo(list<Studentas>& studentai, const string& fileName) {
     }
 
     string line;
-    size_t lineCount = 0;
-
-    getline(file, line);
-
-    while (getline(file, line)) {
-        lineCount++;
-    }
-
-    file.clear();
-    file.seekg(0, ios::beg);
 
     getline(file, line);
     istringstream headerStream(line);
@@ -54,43 +44,43 @@ void skaitytiIsFailo(list<Studentas>& studentai, const string& fileName) {
         studentStream >> studentas.vardas >> studentas.pavarde;
 
         for (int i = 0; i < numHomework; ++i) {
+            int rezultatas;
             string temp;
-            studentStream >> temp;
 
+            studentStream >> temp;
             try {
-                int rezultatas = stoi(temp);
+                rezultatas = stoi(temp);
                 if (rezultatas < 0 || rezultatas > 10) {
                     throw out_of_range("Invalid value");
                 }
                 studentas.rezultatai.namuDarbuRezultatai.push_back(rezultatas);
             }
             catch (const exception&) {
-                int validResult;
                 cout << "Neteisingas namu darbo rezultatas: " << temp << endl;
                 cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
-                cin >> validResult;
-                correctInvalidData(validResult, "namu darbo rezultatas");
-                studentas.rezultatai.namuDarbuRezultatai.push_back(validResult);
+                cin >> rezultatas;
+                correctInvalidData(rezultatas, "namu darbo rezultatas");
+                studentas.rezultatai.namuDarbuRezultatai.push_back(rezultatas);
             }
         }
 
+        int egzaminas;
         string tempExam;
-        studentStream >> tempExam;
 
+        studentStream >> tempExam;
         try {
-            int egzaminas = stoi(tempExam);
+            egzaminas = stoi(tempExam);
             if (egzaminas < 0 || egzaminas > 10) {
                 throw out_of_range("Invalid value");
             }
             studentas.rezultatai.egzaminoRezultatas = egzaminas;
         }
         catch (const exception&) {
-            int validExam;
             cout << "Neteisingas egzamino rezultatas: " << tempExam << endl;
             cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
-            cin >> validExam;
-            correctInvalidData(validExam, "egzamino rezultatas");
-            studentas.rezultatai.egzaminoRezultatas = validExam;
+            cin >> egzaminas;
+            correctInvalidData(egzaminas, "egzamino rezultatas");
+            studentas.rezultatai.egzaminoRezultatas = egzaminas;
         }
 
         studentai.push_back(studentas);
