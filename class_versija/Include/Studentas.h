@@ -18,6 +18,9 @@ public:
     Studentas(const std::string& vardas, const std::string& pavarde, const Rezultatai& rezultatai, double finalGrade)
         : vardas(vardas), pavarde(pavarde), rezultatai(rezultatai), finalGrade(finalGrade) {}
 
+    ~Studentas() {
+    }
+
     std::string getVardas() const { return vardas; }
     std::string getPavarde() const { return pavarde; }
     const Rezultatai& getRezultatai() const { return rezultatai; }
