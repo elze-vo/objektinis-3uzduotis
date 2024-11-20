@@ -30,21 +30,18 @@ void addStudentsRandomly(vector<Studentas>& studentai) {
 
     for (int i = 0; i < numberOfStudents; ++i) {
         Studentas studentas;
-        studentas.setVardas("Vardas" + to_string(i + 1));  // Using setter for 'vardas'
-        studentas.setPavarde("Pavarde" + to_string(i + 1));  // Using setter for 'pavarde'
+        studentas.setVardas("Vardas" + to_string(i + 1));
+        studentas.setPavarde("Pavarde" + to_string(i + 1));
 
-        // Generate random homework results
-        int numHomework = rand() % 5 + 1;  // Random number of homework grades
+        int numHomework = rand() % 5 + 1;
         vector<double> homeworkGrades;
         for (int j = 0; j < numHomework; ++j) {
-            homeworkGrades.push_back(static_cast<double>(rand() % 11)); // Add random grades to vector
+            homeworkGrades.push_back(static_cast<double>(rand() % 11));
         }
 
-        // Set homework grades in the student object
         studentas.getRezultatai().setNamuDarbuRezultatai(homeworkGrades);
 
-        // Generate random exam result
-        studentas.getRezultatai().setEgzaminoRezultatas(rand() % 11);  // Random exam grade
+        studentas.getRezultatai().setEgzaminoRezultatas(rand() % 11);
 
         studentai.push_back(studentas);
     }
