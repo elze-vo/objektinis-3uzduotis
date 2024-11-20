@@ -57,8 +57,8 @@ int main() {
             }
             else {
                 inputFile.close();
-                skaitytiIsFailo(studentai, failoPavadinimas);  // Assuming this uses getters/setters
-                processStudentData(studentai);  // Process student data with proper getters/setters
+                skaitytiIsFailo(studentai, failoPavadinimas);
+                processStudentData(studentai);
                 break;
             }
         } while (true);
@@ -68,14 +68,14 @@ int main() {
         break;
     }
     case 2: {
-        addStudentsManually(studentai);  // Add students manually using setter methods
-        processStudentData(studentai);   // Process the student data accordingly
+        addStudentsManually(studentai);
+        processStudentData(studentai);
 
         system("pause");
         break;
     }
     case 3: {
-        addStudentsRandomly(studentai);  // Random student generation using getter/setter methods
+        addStudentsRandomly(studentai);
         processStudentData(studentai);
 
         system("pause");
@@ -150,7 +150,7 @@ int main() {
 
             std::vector<Studentas> studentai;
 
-            skaitytiIsFailo(studentai, failoPavadinimas);  // Uses the new getters/setters for data
+            skaitytiIsFailo(studentai, failoPavadinimas);
 
             int sortOption;
             do {
@@ -174,7 +174,7 @@ int main() {
                 std::vector<Studentas> temp;
 
                 for (auto& studentas : studentai) {
-                    studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));  // Set final grade using setter
+                    studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
                 }
 
                 for (int i = 1; i < 4; ++i) {
@@ -190,7 +190,7 @@ int main() {
 
             else {
                 for (auto& studentas : studentai) {
-                    studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));  // Set final grade using setter
+                    studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
                 }
 
                 if (strategyOption == 1) {
