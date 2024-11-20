@@ -21,7 +21,7 @@ public:
     std::string getVardas() const { return vardas; }
     std::string getPavarde() const { return pavarde; }
     const Rezultatai& getRezultatai() const { return rezultatai; }
-    Rezultatai& getRezultatai() { return rezultatai; } // Return by reference
+    Rezultatai& getRezultatai() { return rezultatai; }
     double getFinalGrade() const { return finalGrade; }
 
     void setVardas(const std::string& vardas) { this->vardas = vardas; }
@@ -29,7 +29,7 @@ public:
     void setRezultatai(const Rezultatai& rezultatai) { this->rezultatai = rezultatai; }
     void setFinalGrade(double finalGrade) { this->finalGrade = finalGrade; }
 
-    friend std::istream& operator>>(std::istream& is, Studentas& studentas);  // Declaration
+    friend std::istream& operator>>(std::istream& is, Studentas& studentas);
 };
 
 void correctInvalidData(int& rezultatas, const std::string& fieldName);
