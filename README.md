@@ -1,4 +1,20 @@
-# Objektinis programavimas (1-oji užduotis)
+# **Objektinis programavimas (2-oji užduotis)**
+
+## **Programos versijų aprašymas**
+
+* ### **v1.1**
+
+  - Ankstesnės atliktos užduoties pagrindu sukurta nauja repozitorija **objektinis-2uzduotis**, kurioje išliko *commit*'ų ir *tag*'ų istorija.
+  - Ankstesnės programos versijai su std::vector pridėtas testavimas su -O1, -O2, -Ox kompiliatoriaus optimizacijos lygiais.
+    Ši programos versija dabar talpinama std_vector direktorijoje.
+  - Ankstesnės programos versijos Struct Studentas ir Struct Rezultatai, naudojančios std::vector, pakeistos į Class Studentas ir Class Rezultatai.
+    Šiai versijai taip pat pridėtas testavimas su -O1, -O2, -Ox kompiliatoriaus optimizacijos lygiais.
+    Ši programos versija dabar talpinama class_versija direktorijoje.
+  - Atlikta eksperimentinė realizacijos spartos analizė pagal kompiliatoriaus optimizavimo lygį, naudojant fiksuotą konteinerį - vektorių.
+
+<img width="900" alt="Screenshot 2024-11-20 190020" src="https://github.com/user-attachments/assets/fb6223dd-8ef1-4285-9929-05d6c47de9af">
+
+# **Objektinis programavimas (1-oji užduotis)**
 
 ## **Programos versijų aprašymas**
 
@@ -75,11 +91,11 @@
 
 ## **Programos įdiegimo instrukcija**
 
-
-  1.  Reikia parsisiųsti **std::list** arba **std::vector** (arba abi) direktoriją (-as).
-  2.  Direktorijoje reikia surasti failą **run.bat** ir jį paleisti.
-  3.  Po run.bat paleidimo direktorijoje atsirado nauja direktorija **Release**. Joje yra failas **studentuAppsas.exe** (vector atveju) arba **studentuAppsasList.exe** (list atveju). ***.exe** failą paleidus atsidarys programa.
-  4.  Pakartotiniam programos paleidimui tereikia paleisti minėtąjį ***.exe** failą.
+  1.  Reikia turėti CMake programos 3.10 versiją (arba naujesnę). CMake galima parsisiųsti internetu.
+  2.  Reikia parsisiųsti **std::list** arba **std::vector** (arba abi) direktoriją (-as).
+  3.  Direktorijoje reikia surasti failą **run.bat** ir jį paleisti.
+  4.  Po run.bat paleidimo direktorijoje atsirado nauja direktorija **Release**. Joje yra failas **studentuAppsas.exe** (vector atveju) arba **studentuAppsasList.exe** (list atveju). ***.exe** failą paleidus atsidarys programa.
+  5.  Pakartotiniam programos paleidimui tereikia paleisti minėtąjį ***.exe** failą.
 
 #
 
