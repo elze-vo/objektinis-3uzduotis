@@ -6,10 +6,10 @@
 
   - Ankstesnės atliktos užduoties pagrindu sukurta nauja repozitorija **objektinis-2uzduotis**, kurioje išliko *commit*'ų ir *tag*'ų istorija.
   - Ankstesnės programos versijai su std::vector pridėtas testavimas su -O1, -O2, -Ox kompiliatoriaus optimizacijos lygiais.
-    Ši programos versija dabar talpinama std_vector direktorijoje.
+    Ši programos versija dabar talpinama **std_vector** direktorijoje.
   - Ankstesnės programos versijos Struct Studentas ir Struct Rezultatai, naudojančios std::vector, pakeistos į Class Studentas ir Class Rezultatai.
     Šiai versijai taip pat pridėtas testavimas su -O1, -O2, -Ox kompiliatoriaus optimizacijos lygiais.
-    Ši programos versija dabar talpinama class_versija direktorijoje.
+    Ši programos versija dabar talpinama **class_versija** direktorijoje.
   - Atlikta eksperimentinė realizacijos spartos analizė pagal kompiliatoriaus optimizavimo lygį, naudojant fiksuotą konteinerį - vektorių.
 
 <img width="900" alt="Screenshot 2024-11-20 190020" src="https://github.com/user-attachments/assets/fb6223dd-8ef1-4285-9929-05d6c47de9af">
