@@ -14,9 +14,9 @@ size_t calculateMemoryUsage(const std::vector<std::vector<Studentas>>& vectors) 
     for (const auto& vec : vectors) {
         totalMemory += sizeof(std::vector<Studentas>) + vec.capacity() * sizeof(Studentas);
         for (const auto& student : vec) {
-            totalMemory += student.getVardas().capacity() * sizeof(char); // Assuming getVardas() returns std::string
-            totalMemory += student.getPavarde().capacity() * sizeof(char); // Assuming getPavarde() returns std::string
-            totalMemory += sizeof(Rezultatai); // Assuming Rezultatai is a class with appropriate memory management
+            totalMemory += student.getVardas().capacity() * sizeof(char);
+            totalMemory += student.getPavarde().capacity() * sizeof(char);
+            totalMemory += sizeof(Rezultatai);
         }
     }
 
@@ -33,7 +33,7 @@ void strategija1(const std::vector<Studentas>& studentai, std::vector<Studentas>
     auto start = std::chrono::high_resolution_clock::now();
 
     for (const auto& student : studentai) {
-        if (student.getFinalGrade() < 5.0) { // Using getter method to access finalGrade
+        if (student.getFinalGrade() < 5.0) {
             neislaike.push_back(student);
         }
         else {
@@ -58,7 +58,7 @@ void strategija2(std::vector<Studentas>& studentai, std::vector<Studentas>& neis
     auto start = std::chrono::high_resolution_clock::now();
 
     for (size_t i = 0; i < studentai.size(); ++i) {
-        if (studentai[i].getFinalGrade() < 5.0) { // Using getter method to access finalGrade
+        if (studentai[i].getFinalGrade() < 5.0) {
             neislaike.push_back(studentai[i]);
         }
         else {
@@ -86,7 +86,7 @@ void strategija3(std::vector<Studentas>& studentai, std::vector<Studentas>& neis
     auto start = std::chrono::high_resolution_clock::now();
 
     auto partitionPoint = std::stable_partition(studentai.begin(), studentai.end(), [](const Studentas& student) {
-        return student.getFinalGrade() >= 5.0; // Using getter method to access finalGrade
+        return student.getFinalGrade() >= 5.0;
         });
 
     std::move(partitionPoint, studentai.end(), std::back_inserter(neislaike));
