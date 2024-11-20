@@ -17,6 +17,9 @@ public:
     Rezultatai(const std::vector<double>& ndRezultatai, double egzRezultatas)
         : namuDarbuRezultatai(ndRezultatai), egzaminoRezultatas(egzRezultatas) {}
 
+    ~Rezultatai() {
+    }
+
     // Getters
     std::vector<double>& getNamuDarbuRezultatai() { return namuDarbuRezultatai; }
     const std::vector<double>& getNamuDarbuRezultatai() const { return namuDarbuRezultatai; }
