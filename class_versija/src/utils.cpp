@@ -41,9 +41,8 @@ double calculateFinalGrade(const Studentas& studentas, int pasirinkimas) {
         return 0.4 * namuDarbuVidurkis + 0.6 * studentas.getRezultatai().getEgzaminoRezultatas();
     }
     else {
-        // Create a copy of the vector instead of modifying the original
         std::vector<double> namuDarbuCopy = studentas.getRezultatai().getNamuDarbuRezultatai();
-        double namuDarbuMediana = calculateMedian(namuDarbuCopy);  // Use the copy
+        double namuDarbuMediana = calculateMedian(namuDarbuCopy);
         return 0.4 * namuDarbuMediana + 0.6 * studentas.getRezultatai().getEgzaminoRezultatas();
     }
 }
@@ -58,9 +57,8 @@ bool compareByResultsDescending(const Studentas& a, const Studentas& b) {
 }
 
 void writeResultsToFile(std::vector<Studentas>& studentai, const std::string& filename, int pasirinkimas, int sortOption) {
-    // Ensure you calculate the final grade before writing
     for (auto& studentas : studentai) {
-        studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas)); // Ensure finalGrade is set
+        studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
     }
 
     if (sortOption == 1) {
