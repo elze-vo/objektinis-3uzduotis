@@ -28,16 +28,15 @@ void addStudentsManually(vector<Studentas>& studentai) {
     for (int i = 0; i < numberOfStudents; ++i) {
         Studentas studentas;
 
-        // Set student's name using class setter
         cout << "Iveskite " << i + 1 << "-ojo studento varda: ";
         string vardas;
         cin >> vardas;
-        studentas.setVardas(vardas); // assuming setVardas() is a setter in Studentas
+        studentas.setVardas(vardas);
 
         cout << "Iveskite " << i + 1 << "-ojo studento pavarde: ";
         string pavarde;
         cin >> pavarde;
-        studentas.setPavarde(pavarde); // assuming setPavarde() is a setter in Studentas
+        studentas.setPavarde(pavarde);
         cin.ignore();
 
         cout << "Iveskite namu darbu rezultatus (spauskite Enter dukart norint baigti): " << endl;
@@ -60,7 +59,7 @@ void addStudentsManually(vector<Studentas>& studentai) {
                         cout << "Namu darbas turi buti tarp 0 ir 10. Bandykite dar karta." << endl;
                     }
                     else {
-                        homeworkGrades.push_back(static_cast<double>(grade)); // Add grade to vector
+                        homeworkGrades.push_back(static_cast<double>(grade));
                     }
                 }
                 catch (invalid_argument&) {
@@ -72,10 +71,8 @@ void addStudentsManually(vector<Studentas>& studentai) {
             }
         }
 
-        // Set homework grades in the student object
         studentas.getRezultatai().setNamuDarbuRezultatai(homeworkGrades);
 
-        // Set exam results using class methods
         cout << "Iveskite egzamino rezultata: ";
         while (true) {
             string examInput;
@@ -87,7 +84,7 @@ void addStudentsManually(vector<Studentas>& studentai) {
                     cout << "Egzamino rezultatas turi buti tarp 0 ir 10. Bandykite dar karta: ";
                 }
                 else {
-                    studentas.getRezultatai().setEgzaminoRezultatas(examGrade); // assuming setEgzaminoRezultatas() is a setter in Rezultatai
+                    studentas.getRezultatai().setEgzaminoRezultatas(examGrade);
                     break;
                 }
             }
