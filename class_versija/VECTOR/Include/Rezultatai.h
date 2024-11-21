@@ -10,19 +10,17 @@ private:
     double egzaminoRezultatas;
 
 public:
-    // Default constructor
     Rezultatai() : egzaminoRezultatas(0) {}
 
-    // Constructor to initialize with results
     Rezultatai(const std::vector<double>& ndRezultatai, double egzRezultatas)
         : namuDarbuRezultatai(ndRezultatai), egzaminoRezultatas(egzRezultatas) {}
 
-    // Getters
+    ~Rezultatai() = default;
+
     std::vector<double>& getNamuDarbuRezultatai() { return namuDarbuRezultatai; }
     const std::vector<double>& getNamuDarbuRezultatai() const { return namuDarbuRezultatai; }
     double getEgzaminoRezultatas() const { return egzaminoRezultatas; }
 
-    // Setters
     void setNamuDarbuRezultatai(const std::vector<double>& ndRezultatai) {
         this->namuDarbuRezultatai = ndRezultatai;
     }
