@@ -10,7 +10,6 @@ void strategija2(std::vector<Studentas>& studentai, std::vector<Studentas>& neis
 
 void strategija3(std::vector<Studentas>& studentai, std::vector<Studentas>& neislaike);
 
-// Updated memory calculation function to work with class-based Studentas
 size_t calculateMemoryUsage(const std::vector<Studentas>& studentai);
 
 #endif // STRATEGIJOS_H
