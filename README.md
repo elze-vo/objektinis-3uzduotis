@@ -2,6 +2,21 @@
 
 ## **Programos versijų aprašymas**
 
+* ### **v1.2**
+
+  - Rezultatai.h ir Studentas.h sujungti į vieną failą, tad class projekto versijose liko vienintelė klasė Studentas.
+  - Studentas klasei realizuota **"Rule of Three"** ir visi reikiami **įvesties/išvesties operatoriai**.
+    - Įvesties operatorius:
+      - nuskaito naudotojo *ranka įvestus* duomenis;
+      - nuskaito duomenis iš *.txt* failo.
+    - Išvesties operatorius:
+      - išveda rezultatus (studentų vardai, pavardės, vieta atmintyje ir galutiniai balai) *į ekraną* arba naudojamas funkcijoje, išvedančioje rezultatus į failą.
+  - Atlikta greičio analizė klasei su realizuota "Rule of Three" ir klasei be realizuotos "Rule of Three" pagal kompiliatoriaus -02 optimizavimo lygį, naudojant fiksuotą konteinerį (vektorių) ir greičiausią rūšiavimo strategiją (trečia).
+ 
+<img width="700" alt="lalala" src="https://github.com/user-attachments/assets/1e0e201f-10e5-4dcc-83a7-ed8e7cc0460a">
+
+
+
 * ### **v1.1**
 
   - Ankstesnės atliktos užduoties pagrindu sukurta nauja repozitorija **objektinis-2uzduotis**, kurioje išliko *commit*'ų ir *tag*'ų istorija.
