@@ -32,8 +32,8 @@ void addStudentsRandomly(std::list<Studentas>& studentai) {
         for (int j = 0; j < numHomework; ++j) {
             homeworkGrades.push_back(static_cast<double>(rand() % 11));
         }
-        studentas.getRezultatai().setNamuDarbuRezultatai(homeworkGrades);
-        studentas.getRezultatai().setEgzaminoRezultatas(rand() % 11);
+        studentas.setNamuDarbuRezultatai(homeworkGrades);
+        studentas.setEgzaminoRezultatas(rand() % 11);
         studentai.push_back(studentas);
     }
 }
