@@ -5,19 +5,78 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include "Studentas.h"
 
 using namespace std;
+
+void demonstruotiTrisMetodus() {
+    Studentas a;
+    cin >> a;
+    Studentas b;
+    b = a;
+    Studentas c(b);
+    cout << a << "\n" << b << "\n" << c << endl;
+}
+
+void correctInvalidData(int& rezultatas, const string& fieldName) {
+    while (cin.fail() || rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Neteisingas " << fieldName << ": " << rezultatas << ". Iveskite sveikaji skaiciu tarp 0 ir 10: ";
+        cin >> rezultatas;
+    }
+}
+
+void skaitytiIsFailo(std::vector<Studentas>& studentai, const std::string& fileName) {
+    std::ifstream file(fileName);
+    if (!file) {
+        std::cout << "Nepavyko atidaryti failo: " << fileName << std::endl;
+        return;
+    }
+
+    std::string line;
+    getline(file, line);
+
+    std::istringstream headerStream(line);
+    std::string headerWord;
+    int numHomework = 0;
+
+    while (headerStream >> headerWord) {
+        if (headerWord.find("ND") != std::string::npos) {
+            numHomework++;
+        }
+    }
+
+    while (getline(file, line)) {
+        line.erase(0, line.find_first_not_of(" \t"));
+        line.erase(line.find_last_not_of(" \t") + 1);
+
+        std::istringstream studentStream(line);
+        Studentas studentas;
+
+        studentStream >> studentas;
+
+        if (studentStream.fail()) {
+            std::cout << "Klaida skaitant studento duomenis: " << line << std::endl;
+            continue;
+        }
+
+        studentai.push_back(studentas);
+    }
+
+    file.close();
+}
 
 double calculateMedian(std::vector<double>& grades) {
     size_t size = grades.size();
     if (size == 0) return 0.0;
 
     size_t mid = size / 2;
-
     std::nth_element(grades.begin(), grades.begin() + mid, grades.end());
 
     if (size % 2 == 0) {
@@ -32,84 +91,93 @@ double calculateMedian(std::vector<double>& grades) {
 
 double calculateFinalGrade(const Studentas& studentas, int pasirinkimas) {
     if (pasirinkimas == 1) {
-        if (studentas.getRezultatai().getNamuDarbuRezultatai().empty()) {
-            return 0.0;
-        }
-        double namuDarbuVidurkis = std::accumulate(studentas.getRezultatai().getNamuDarbuRezultatai().begin(),
-            studentas.getRezultatai().getNamuDarbuRezultatai().end(), 0.0) /
-            studentas.getRezultatai().getNamuDarbuRezultatai().size();
-        return 0.4 * namuDarbuVidurkis + 0.6 * studentas.getRezultatai().getEgzaminoRezultatas();
+        const auto& grades = studentas.getNamuDarbuRezultatai();
+        if (grades.empty()) return 0.0;
+        double average = std::accumulate(grades.begin(), grades.end(), 0.0) / grades.size();
+        return 0.4 * average + 0.6 * studentas.getEgzaminoRezultatas();
     }
     else {
-        std::vector<double> namuDarbuCopy = studentas.getRezultatai().getNamuDarbuRezultatai();
-        double namuDarbuMediana = calculateMedian(namuDarbuCopy);
-        return 0.4 * namuDarbuMediana + 0.6 * studentas.getRezultatai().getEgzaminoRezultatas();
+        auto grades = studentas.getNamuDarbuRezultatai();
+        double median = calculateMedian(grades);
+        return 0.4 * median + 0.6 * studentas.getEgzaminoRezultatas();
     }
 }
 
-
 bool compareByResultsAscending(const Studentas& a, const Studentas& b) {
-    return calculateFinalGrade(a, 1) < calculateFinalGrade(b, 1);
+    return a.getFinalGrade() < b.getFinalGrade();
 }
 
 bool compareByResultsDescending(const Studentas& a, const Studentas& b) {
-    return calculateFinalGrade(a, 1) > calculateFinalGrade(b, 1);
+    return a.getFinalGrade() > b.getFinalGrade();
 }
 
-void writeResultsToFile(std::vector<Studentas>& studentai, const std::string& filename, int pasirinkimas, int sortOption) {
-    for (auto& studentas : studentai) {
-        studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
-    }
-
-    if (sortOption == 1) {
-        std::sort(studentai.begin(), studentai.end(), [](const Studentas& a, const Studentas& b) {
-            return a.getFinalGrade() < b.getFinalGrade();
-            });
-    }
-    else {
-        std::sort(studentai.begin(), studentai.end(), [](const Studentas& a, const Studentas& b) {
-            return a.getFinalGrade() > b.getFinalGrade();
-            });
-    }
-
+void writeResultsToFile(const std::vector<Studentas>& studentai, const std::string& filename, int pasirinkimas) {
     std::ofstream outFile(filename);
-    outFile << "\n" << std::setw(15) << std::left << "Vardas"
-        << std::setw(15) << std::left << "Pavarde"
-        << std::setw(20) << std::left << "Vieta atmintyje"
-        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-    outFile << std::string(70, '-') << std::endl;
+    if (!outFile) {
+        cout << "Nepavyko atidaryti failo: " << filename << endl;
+        return;
+    }
+
+    outFile << std::setw(15) << std::left << "Vardas"
+        << std::setw(15) << "Pavarde"
+        << std::setw(25) << "Vieta atmintyje"
+        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+    outFile << std::string(70, '-') << endl;
 
     for (const auto& studentas : studentai) {
-        outFile << std::setw(15) << std::left << studentas.getVardas()
-            << std::setw(15) << std::left << studentas.getPavarde()
-            << std::setw(20) << std::left << &studentas
-            << std::fixed << std::setprecision(2) << studentas.getFinalGrade() << std::endl;
+        outFile << studentas << endl;
     }
 
     outFile.close();
 }
 
-void printOrSaveResults(std::vector<Studentas>& studentai, int pasirinkimas, int outputOption) {
-    if (pasirinkimas == 1) {
-        std::sort(studentai.begin(), studentai.end(), compareByResultsAscending);
-    }
-    else {
-        std::sort(studentai.begin(), studentai.end(), compareByResultsDescending);
+void printOrSaveResults(const vector<Studentas>& studentai, int pasirinkimas, int outputOption) {
+    vector<Studentas> islaike, neislaike;
+
+    for (const auto& studentas : studentai) {
+        if (studentas.getFinalGrade() >= 5.0) {
+            islaike.push_back(studentas);
+        }
+        else {
+            neislaike.push_back(studentas);
+        }
     }
 
-    if (outputOption == 1 || outputOption == 3) {
-        std::cout << "\n" << std::setw(15) << std::left << "Vardas"
-            << std::setw(15) << std::left << "Pavarde"
-            << std::setw(20) << std::left << "Vieta atmintyje"
-            << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << std::endl;
-        std::cout << std::string(70, '-') << std::endl;
+    if (!islaike.empty()) {
+        if (outputOption == 1 || outputOption == 3) {
+            cout << "Islaike studentai:" << endl;
+            cout << std::setw(15) << std::left << "Vardas"
+                << std::setw(15) << "Pavarde"
+                << std::setw(25) << "Vieta atmintyje"
+                << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+            cout << std::string(70, '-') << endl;
 
-        for (const auto& studentas : studentai) {
-            double galutinisVid = calculateFinalGrade(studentas, pasirinkimas);
-            std::cout << std::setw(15) << std::left << studentas.getVardas()
-                << std::setw(15) << std::left << studentas.getPavarde()
-                << std::setw(20) << std::left << &studentas
-                << std::fixed << std::setprecision(2) << galutinisVid << std::endl;
+            for (const auto& studentas : islaike) {
+                cout << studentas << endl;
+            }
+        }
+
+        if (outputOption == 2 || outputOption == 3) {
+            writeResultsToFile(islaike, "islaike.txt", pasirinkimas);
+        }
+    }
+
+    if (!neislaike.empty()) {
+        if (outputOption == 1 || outputOption == 3) {
+            cout << "Neislaike studentai:" << endl;
+            cout << std::setw(15) << std::left << "Vardas"
+                << std::setw(15) << "Pavarde"
+                << std::setw(25) << "Vieta atmintyje"
+                << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+            cout << std::string(70, '-') << endl;
+
+            for (const auto& studentas : neislaike) {
+                cout << studentas << endl;
+            }
+        }
+
+        if (outputOption == 2 || outputOption == 3) {
+            writeResultsToFile(neislaike, "neislaike.txt", pasirinkimas);
         }
     }
 }
@@ -125,24 +193,24 @@ void createStudentFile(int studentCount, int gradeCount, const std::string& file
         return;
     }
 
-    outFile << left << setw(20) << "Vardas" << setw(20) << "Pavarde";
+    outFile << std::setw(15) << std::left << "Vardas"
+        << std::setw(15) << "Pavarde";
 
     for (int i = 1; i <= gradeCount; ++i) {
-        outFile << setw(10) << "ND" + to_string(i);
+        outFile << std::setw(8) << ("ND" + to_string(i));
     }
-    outFile << setw(10) << "Egz." << endl;
+    outFile << std::setw(8) << "Egz." << endl;
 
     srand(static_cast<unsigned int>(time(0)));
 
     for (int i = 1; i <= studentCount; ++i) {
-        outFile << left << setw(20) << ("Vardas" + to_string(i)) << setw(20) << ("Pavarde" + to_string(i));
+        outFile << std::setw(15) << ("Vardas" + to_string(i))
+            << std::setw(15) << ("Pavarde" + to_string(i));
 
         for (int j = 0; j < gradeCount; ++j) {
-            outFile << setw(10) << (rand() % 10 + 1);
+            outFile << std::setw(8) << (rand() % 10 + 1);
         }
-
-        outFile << setw(10) << (rand() % 10 + 1);
-        outFile << endl;
+        outFile << std::setw(8) << (rand() % 10 + 1) << endl;
     }
 
     outFile.close();
@@ -155,69 +223,33 @@ void createStudentFile(int studentCount, int gradeCount, const std::string& file
 }
 
 void processStudentData(vector<Studentas>& studentai) {
-    int gradeCalculationOption;
-    do {
-        cout << "Pasirinkite, kaip skaiciuoti galutini bala:\n";
-        cout << "1 - Vidurkis\n";
-        cout << "2 - Mediana\n";
-        cout << "Iveskite pasirinkima: ";
-        cin >> gradeCalculationOption;
+    int pasirinkimas, sortOption, outputOption;
 
-        if (cin.fail() || (gradeCalculationOption < 1 || gradeCalculationOption > 2)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            break;
-        }
-    } while (true);
-
-    int sortOption;
     do {
-        cout << "Pasirinkite rezultatu rikiavimo tvarka:\n";
-        cout << "1 - Rikiuoti didejimo tvarka\n";
-        cout << "2 - Rikiuoti mazejimo tvarka\n";
-        cout << "Iveskite pasirinkima: ";
+        cout << "Pasirinkite balu skaiciavimo metoda\n1 - Vidurkis\n2 - Mediana\n";
+        cin >> pasirinkimas;
+    } while (pasirinkimas < 1 || pasirinkimas > 2);
+
+    do {
+        cout << "Pasirinkite rikiavimo buda:\n1 - Didejimo tvarka\n2 - Mazejimo tvarka\n";
         cin >> sortOption;
+    } while (sortOption < 1 || sortOption > 2);
 
-        if (cin.fail() || (sortOption < 1 || sortOption > 2)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            break;
-        }
-    } while (true);
-
-    int outputOption;
     do {
-        cout << "Pasirinkite isvedimo buda:\n";
-        cout << "1 - Spausdinti i ekrana\n";
-        cout << "2 - Issaugoti i failus\n";
-        cout << "3 - Spausdinti i ekrana ir issaugoti i failus\n";
-        cout << "Iveskite pasirinkima: ";
+        cout << "Pasirinkite isvedimo buda:\n1 - Spausdinti\n2 - Issaugoti\n3 - Spausdinti ir issaugoti\n";
         cin >> outputOption;
+    } while (outputOption < 1 || outputOption > 3);
 
-        if (cin.fail() || (outputOption < 1 || outputOption > 3)) {
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
-        }
-        else {
-            if (outputOption == 2 || outputOption == 3) {
-                cout << "Rezultatai issaugoti failuose islaike.txt ir neislaike.txt.\n";
-            }
-            break;
-        }
-    } while (true);
+    for (auto& studentas : studentai) {
+        studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
+    }
 
     if (sortOption == 1) {
-        sort(studentai.begin(), studentai.end(), compareByResultsDescending);
-    }
-    else {
         sort(studentai.begin(), studentai.end(), compareByResultsAscending);
     }
-    printOrSaveResults(studentai, gradeCalculationOption, outputOption);
+    else {
+        sort(studentai.begin(), studentai.end(), compareByResultsDescending);
+    }
+
+    printOrSaveResults(studentai, pasirinkimas, outputOption);
 }
