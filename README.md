@@ -12,10 +12,11 @@
     - Išvesties operatorius:
       - išveda rezultatus (studentų vardai, pavardės, vieta atmintyje ir galutiniai balai) *į ekraną* arba naudojamas funkcijoje, išvedančioje rezultatus į failą.
   - Atlikta greičio analizė klasei su realizuota "Rule of Three" ir klasei be realizuotos "Rule of Three" pagal kompiliatoriaus -02 optimizavimo lygį, naudojant fiksuotą konteinerį (vektorių) ir greičiausią rūšiavimo strategiją (trečia).
+  - Pridėta galimybė demonstruoti visus metodus, atitinkančius trijų metodų taisyklę. Kitaip nei su kitais pradiniais pasirinkimas 1-5, trijų metodų demonstravimas (6) reikalauja *ENTER* paspausti du kartus.
  
 <img width="700" alt="lalala" src="https://github.com/user-attachments/assets/1e0e201f-10e5-4dcc-83a7-ed8e7cc0460a">
 
-
+#
 
 * ### **v1.1**
 
