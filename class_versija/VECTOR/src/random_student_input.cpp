@@ -39,9 +39,9 @@ void addStudentsRandomly(vector<Studentas>& studentai) {
             homeworkGrades.push_back(static_cast<double>(rand() % 11));
         }
 
-        studentas.getRezultatai().setNamuDarbuRezultatai(homeworkGrades);
+        studentas.setNamuDarbuRezultatai(homeworkGrades);
 
-        studentas.getRezultatai().setEgzaminoRezultatas(rand() % 11);
+        studentas.setEgzaminoRezultatas(rand() % 11);
 
         studentai.push_back(studentas);
     }
