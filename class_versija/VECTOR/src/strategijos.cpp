@@ -5,7 +5,6 @@
 #include <iostream>
 #include <iomanip>
 #include "Studentas.h"
-#include "Rezultatai.h"
 #include "utils.h"
 
 size_t calculateMemoryUsage(const std::vector<std::vector<Studentas>>& vectors) {
@@ -16,10 +15,11 @@ size_t calculateMemoryUsage(const std::vector<std::vector<Studentas>>& vectors) 
         for (const auto& student : vec) {
             totalMemory += student.getVardas().capacity() * sizeof(char);
             totalMemory += student.getPavarde().capacity() * sizeof(char);
-            totalMemory += sizeof(Rezultatai);
+            totalMemory += student.getNamuDarbuRezultatai().capacity() * sizeof(double);
+            totalMemory += sizeof(student.getEgzaminoRezultatas());
+            totalMemory += sizeof(student.getFinalGrade());
         }
     }
-
     return totalMemory;
 }
 
