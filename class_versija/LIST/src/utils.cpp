@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
@@ -12,6 +13,64 @@
 #include "Studentas.h"
 
 using namespace std;
+
+void demonstruotiTrisMetodus() {
+    Studentas a;
+    cin >> a;
+    Studentas b;
+    b = a;
+    Studentas c(b);
+    cout << a << "\n" << b << "\n" << c << endl;
+}
+
+void correctInvalidData(int& rezultatas, const string& fieldName) {
+    while (cin.fail() || rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Neteisingas " << fieldName << ": " << rezultatas << ". Iveskite sveikaji skaiciu tarp 0 ir 10: ";
+        cin >> rezultatas;
+    }
+}
+
+void skaitytiIsFailo(std::list<Studentas>& studentai, const std::string& fileName) {
+    std::ifstream file(fileName);
+    if (!file) {
+        std::cout << "Nepavyko atidaryti failo: " << fileName << std::endl;
+        return;
+    }
+
+    std::string line;
+    getline(file, line);
+
+    std::istringstream headerStream(line);
+    std::string headerWord;
+    int numHomework = 0;
+
+    while (headerStream >> headerWord) {
+        if (headerWord.find("ND") != std::string::npos) {
+            numHomework++;
+        }
+    }
+
+    while (getline(file, line)) {
+        line.erase(0, line.find_first_not_of(" \t"));
+        line.erase(line.find_last_not_of(" \t") + 1);
+
+        std::istringstream studentStream(line);
+        Studentas studentas;
+
+        studentStream >> studentas;
+
+        if (studentStream.fail()) {
+            std::cout << "Klaida skaitant studento duomenis: " << line << std::endl;
+            continue;
+        }
+
+        studentai.push_back(studentas);
+    }
+
+    file.close();
+}
 
 double calculateMedian(const list<double>& grades) {
     if (grades.empty()) return 0.0;
@@ -30,8 +89,8 @@ double calculateMedian(const list<double>& grades) {
 }
 
 double calculateFinalGrade(const Studentas& studentas, int pasirinkimas) {
-    const auto& ndRezultatai = studentas.getRezultatai().getNamuDarbuRezultatai();
-    double egzRezultatas = studentas.getRezultatai().getEgzaminoRezultatas();
+    const auto& ndRezultatai = studentas.getNamuDarbuRezultatai();
+    double egzRezultatas = studentas.getEgzaminoRezultatas();
 
     if (pasirinkimas == 1) {
         if (ndRezultatai.empty()) return 0.0;
@@ -52,64 +111,76 @@ bool compareByResultsDescending(const Studentas& a, const Studentas& b) {
     return a.getFinalGrade() > b.getFinalGrade();
 }
 
-void writeResultsToFile(list<Studentas>& studentai, const string& filename, int sortOption) {
-    if (sortOption == 1) {
-        studentai.sort(compareByResultsAscending);
-    }
-    else {
-        studentai.sort(compareByResultsDescending);
-    }
-
+void writeResultsToFile(const list<Studentas>& studentai, const string& filename, int pasirinkimas) {
     ofstream outFile(filename);
     if (!outFile) {
         cerr << "Nepavyko sukurti failo: " << filename << endl;
         return;
     }
 
-    outFile << setw(15) << left << "Vardas"
-        << setw(15) << left << "Pavarde"
-        << "Galutinis (Vid./Med.)" << endl;
-    outFile << string(50, '-') << endl;
+    outFile << std::setw(15) << std::left << "Vardas"
+        << std::setw(15) << "Pavarde"
+        << std::setw(25) << "Vieta atmintyje"
+        << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+    outFile << string(70, '-') << endl;
 
     for (const auto& studentas : studentai) {
-        outFile << setw(15) << left << studentas.getVardas()
-            << setw(15) << left << studentas.getPavarde()
-            << fixed << setprecision(2) << studentas.getFinalGrade() << endl;
+        outFile << studentas << endl;
     }
 
     outFile.close();
-    cout << "Rezultatai issaugoti faile: " << filename << endl;
 }
 
+void printOrSaveResults(const list<Studentas>& studentai, int pasirinkimas, int outputOption) {
+    list<Studentas> islaike, neislaike;
 
-void printOrSaveResults(list<Studentas>& studentai, int sortOption, int outputOption) {
-    if (sortOption == 1) {
-        studentai.sort(compareByResultsAscending);
-    }
-    else if (sortOption == 2) {
-        studentai.sort(compareByResultsDescending);
-    }
-
-    if (outputOption == 1 || outputOption == 3) {
-        cout << setw(15) << left << "Vardas"
-            << setw(15) << left << "Pavarde"
-            << setw(15) << left << "Adresas atmintyje"
-            << "Galutinis (Vid./Med.)" << endl;
-        cout << string(50, '-') << endl;
-
-        for (const auto& studentas : studentai) {
-            cout << setw(15) << left << studentas.getVardas()
-                << setw(15) << left << studentas.getPavarde()
-                << setw(20) << left << &studentas
-                << fixed << setprecision(2) << studentas.getFinalGrade() << endl;
+    for (const auto& studentas : studentai) {
+        if (studentas.getFinalGrade() >= 5.0) {
+            islaike.push_back(studentas);
+        }
+        else {
+            neislaike.push_back(studentas);
         }
     }
 
-    if (outputOption == 2 || outputOption == 3) {
-        writeResultsToFile(studentai, "rezultatai.txt", sortOption);
+    if (!islaike.empty()) {
+        if (outputOption == 1 || outputOption == 3) {
+            cout << "Islaike studentai:" << endl;
+            cout << std::setw(15) << std::left << "Vardas"
+                << std::setw(15) << "Pavarde"
+                << std::setw(25) << "Vieta atmintyje"
+                << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+            cout << std::string(70, '-') << endl;
+
+            for (const auto& studentas : islaike) {
+                cout << studentas << endl;
+            }
+        }
+
+        if (outputOption == 2 || outputOption == 3) {
+            writeResultsToFile(islaike, "islaike.txt", pasirinkimas);
+        }
+    }
+
+    if (!neislaike.empty()) {
+        if (outputOption == 1 || outputOption == 3) {
+            cout << "Neislaike studentai:" << endl;
+            cout << std::setw(15) << std::left << "Vardas"
+                << std::setw(15) << "Pavarde"
+                << std::setw(25) << "Vieta atmintyje"
+                << (pasirinkimas == 1 ? "Galutinis (Vid.)" : "Galutinis (Med.)") << endl;
+            cout << std::string(70, '-') << endl;
+
+            for (const auto& studentas : neislaike) {
+                cout << studentas << endl;
+            }
+        }
+
+        if (outputOption == 2 || outputOption == 3) {
+            writeResultsToFile(neislaike, "neislaike.txt", pasirinkimas);
+        }
     }
 }
-
 
 void createStudentFile(int studentCount, int gradeCount, const string& fileName) {
     using namespace chrono;
@@ -145,17 +216,33 @@ void createStudentFile(int studentCount, int gradeCount, const string& fileName)
 }
 
 void processStudentData(list<Studentas>& studentai) {
-    int sortOption, outputOption;
+    int pasirinkimas, sortOption, outputOption;
 
     do {
-        cout << "Pasirinkite rikiavimo tvarka (1 - Didejimo, 2 - Mazejimo): ";
+        cout << "Pasirinkite balu skaiciavimo metoda\n1 - Vidurkis\n2 - Mediana\n";
+        cin >> pasirinkimas;
+    } while (pasirinkimas < 1 || pasirinkimas > 2);
+
+    do {
+        cout << "Pasirinkite rikiavimo buda:\n1 - Didejimo tvarka\n2 - Mazejimo tvarka\n";
         cin >> sortOption;
     } while (sortOption < 1 || sortOption > 2);
 
     do {
-        cout << "Pasirinkite isvedimo buda (1 - Ekranas, 2 - Failas, 3 - Abu): ";
+        cout << "Pasirinkite isvedimo buda:\n1 - Spausdinti\n2 - Issaugoti\n3 - Spausdinti ir issaugoti\n";
         cin >> outputOption;
     } while (outputOption < 1 || outputOption > 3);
 
-    printOrSaveResults(studentai, sortOption, outputOption);
+    for (auto& studentas : studentai) {
+        studentas.setFinalGrade(calculateFinalGrade(studentas, pasirinkimas));
+    }
+
+    if (sortOption == 1) {
+        studentai.sort(compareByResultsAscending);
+    }
+    else {
+        studentai.sort(compareByResultsDescending);
+    }
+
+    printOrSaveResults(studentai, pasirinkimas, outputOption);
 }
