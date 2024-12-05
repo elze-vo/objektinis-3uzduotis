@@ -9,14 +9,19 @@
 
 size_t calculateMemoryUsage(const std::list<std::list<Studentas>>& lists) {
     size_t totalMemory = 0;
+
     for (const auto& lst : lists) {
-        totalMemory += sizeof(std::list<Studentas>) + lst.size() * sizeof(Studentas);
+        totalMemory += sizeof(std::list<Studentas>);
+
         for (const auto& student : lst) {
             totalMemory += student.getVardas().capacity() * sizeof(char);
             totalMemory += student.getPavarde().capacity() * sizeof(char);
-            totalMemory += sizeof(Rezultatai);
+            totalMemory += student.getNamuDarbuRezultatai().size() * sizeof(double);
+            totalMemory += sizeof(student.getEgzaminoRezultatas());
+            totalMemory += sizeof(student.getFinalGrade());
         }
     }
+
     return totalMemory;
 }
 
