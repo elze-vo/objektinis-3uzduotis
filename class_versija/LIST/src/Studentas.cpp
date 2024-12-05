@@ -4,104 +4,131 @@
 #include <list>
 #include <string>
 #include <limits>
+#include <iomanip>
 #include "Studentas.h"
-#include "utils.h"
 
 using namespace std;
 
 std::istream& operator>>(std::istream& is, Studentas& studentas) {
-    std::string vardas, pavarde;
-    is >> vardas >> pavarde;
-    studentas.setVardas(vardas);
-    studentas.setPavarde(pavarde);
+    if (&is == &std::cin) {
+        // Manual input handling
+        cout << "Iveskite studento varda: ";
+        string vardas;
+        cin >> vardas;
+        studentas.setVardas(vardas);
 
-    Rezultatai rezultatai;
-    is >> rezultatai;
-    studentas.setRezultatai(rezultatai);
+        cout << "Iveskite studento pavarde: ";
+        string pavarde;
+        cin >> pavarde;
+        studentas.setPavarde(pavarde);
+        cin.ignore();
 
+        cout << "Iveskite namu darbu rezultatus (dukart spauskite Enter norint baigti): " << endl;
+        list<double> homeworkGrades;
+        string input;
+
+        while (true) {
+            cout << "Namu darbas: ";
+            getline(cin, input);
+
+            if (input.empty()) {
+                if (!homeworkGrades.empty()) break;
+                cout << "Namu darbu rezultatai negali buti tusti. Bandykite dar karta." << endl;
+            }
+            else {
+                try {
+                    int grade = stoi(input);
+                    if (grade < 0 || grade > 10) {
+                        cout << "Namu darbas turi buti tarp 0 ir 10. Bandykite dar karta." << endl;
+                    }
+                    else {
+                        homeworkGrades.push_back(static_cast<double>(grade));
+                    }
+                }
+                catch (invalid_argument&) {
+                    cout << "Ivedete neteisinga reiksme. Bandykite dar karta." << endl;
+                }
+                catch (out_of_range&) {
+                    cout << "Ivedete reiksme, kuri yra per didele. Bandykite dar karta." << endl;
+                }
+            }
+        }
+        studentas.setNamuDarbuRezultatai(homeworkGrades);
+
+        cout << "Iveskite egzamino rezultata: ";
+        while (true) {
+            string examInput;
+            cin >> examInput;
+
+            try {
+                int examGrade = stoi(examInput);
+                if (examGrade < 0 || examGrade > 10) {
+                    cout << "Egzamino rezultatas turi buti tarp 0 ir 10. Bandykite dar karta: ";
+                }
+                else {
+                    studentas.setEgzaminoRezultatas(examGrade);
+                    break;
+                }
+            }
+            catch (invalid_argument&) {
+                cout << "Ivedete neteisinga reiksme. Bandykite dar karta." << endl;
+            }
+            catch (out_of_range&) {
+                cout << "Ivedete reiksme, kuri yra per didele. Bandykite dar karta." << endl;
+            }
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+    else {
+        // File input handling
+        string vardas, pavarde;
+        is >> vardas >> pavarde;
+
+        if (is.fail()) return is;
+
+        std::list<double> homeworkGrades;
+        double grade;
+
+        for (int i = 0; i < 5; ++i) {
+            if (is >> grade) {
+                if (grade < 0 || grade > 10) {
+                    is.setstate(std::ios::failbit);
+                    return is;
+                }
+                homeworkGrades.push_back(grade);
+            }
+            else {
+                is.setstate(std::ios::failbit);
+                return is;
+            }
+        }
+
+        double egzaminas;
+        if (is >> egzaminas) {
+            if (egzaminas < 0 || egzaminas > 10) {
+                is.setstate(std::ios::failbit);
+                return is;
+            }
+        }
+        else {
+            is.setstate(std::ios::failbit);
+            return is;
+        }
+
+        studentas.setVardas(vardas);
+        studentas.setPavarde(pavarde);
+        studentas.setNamuDarbuRezultatai(homeworkGrades);
+        studentas.setEgzaminoRezultatas(egzaminas);
+    }
     return is;
 }
 
-void correctInvalidData(int& rezultatas, const string& fieldName) {
-    while (cin.fail() || rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Neteisingas " << fieldName << ": " << rezultatas << ". Iveskite sveikaji skaiciu tarp 0 ir 10: ";
-        cin >> rezultatas;
-    }
-}
 
-void skaitytiIsFailo(list<Studentas>& studentai, const string& fileName) {
-    ifstream file(fileName);
-    if (!file) {
-        cout << "Nepavyko atidaryti failo: " << fileName << endl;
-        return;
-    }
-
-    string line;
-    getline(file, line);
-    istringstream headerStream(line);
-    string headerWord;
-    int numHomework = 0;
-
-    while (headerStream >> headerWord) {
-        if (headerWord.find("ND") != string::npos) {
-            numHomework++;
-        }
-    }
-
-    while (getline(file, line)) {
-        istringstream studentStream(line);
-        Studentas studentas;
-
-        string vardas, pavarde;
-        studentStream >> vardas >> pavarde;
-        studentas.setVardas(vardas);
-        studentas.setPavarde(pavarde);
-
-        list<double> namuDarbai;
-        for (int i = 0; i < numHomework; ++i) {
-            string temp;
-            studentStream >> temp;
-            try {
-                double rezultatas = stod(temp);
-                if (rezultatas < 0 || rezultatas > 10) {
-                    throw out_of_range("Invalid value");
-                }
-                namuDarbai.push_back(rezultatas);
-            }
-            catch (const exception&) {
-                cout << "Neteisingas namu darbo rezultatas: " << temp << endl;
-                cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
-                int rezultatas;
-                cin >> rezultatas;
-                correctInvalidData(rezultatas, "namu darbo rezultatas");
-                namuDarbai.push_back(rezultatas);
-            }
-        }
-
-        studentas.getRezultatai().setNamuDarbuRezultatai(namuDarbai);
-
-        string tempExam;
-        studentStream >> tempExam;
-        try {
-            double egzaminas = stod(tempExam);
-            if (egzaminas < 0 || egzaminas > 10) {
-                throw out_of_range("Invalid value");
-            }
-            studentas.getRezultatai().setEgzaminoRezultatas(egzaminas);
-        }
-        catch (const exception&) {
-            cout << "Neteisingas egzamino rezultatas: " << tempExam << endl;
-            cout << "Iveskite teisinga sveikaji skaiciu tarp 0 ir 10: ";
-            int egzaminas;
-            cin >> egzaminas;
-            correctInvalidData(egzaminas, "egzamino rezultatas");
-            studentas.getRezultatai().setEgzaminoRezultatas(egzaminas);
-        }
-
-        studentai.push_back(studentas);
-    }
-
-    file.close();
+std::ostream& operator<<(std::ostream& os, const Studentas& studentas) {
+    os << std::setw(15) << std::left << studentas.getVardas()
+        << std::setw(15) << std::left << studentas.getPavarde()
+        << std::setw(25) << std::left << &studentas
+        << std::fixed << std::setprecision(2) << studentas.getFinalGrade();
+    return os;
 }
