@@ -23,6 +23,24 @@ void demonstruotiTrisMetodus() {
     cout << a << "\n" << b << "\n" << c << endl;
 }
 
+void zmogusDemonstravimas() {
+    cout << "\n";
+
+    // Bandyti sukurti tiesiogini Zmogaus objekta yra neimanoma, nes klase abstrakti:
+    //Zmogus zmogus;  // Sukelia kompiliavimo klaida
+
+    // Sukuriamas Zmogaus tipo rodykles objektas, kuris rodo i Studento objekta
+    Zmogus* zmogus = new Studentas("Vardenis", "Pavardenis");
+
+    // Isvedami vardo ir pavardes duomenys naudojant getterius
+    cout << zmogus->getVardas() << " " << zmogus->getPavarde() << endl;
+
+    // Iskvieciamas virtualus metodas
+    zmogus->printInfo();
+
+    delete zmogus;
+}
+
 void correctInvalidData(int& rezultatas, const string& fieldName) {
     while (cin.fail() || rezultatas < 0 || rezultatas > 10 || rezultatas != static_cast<int>(rezultatas)) {
         cin.clear();
