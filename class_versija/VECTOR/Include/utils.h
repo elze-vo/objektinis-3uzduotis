@@ -8,6 +8,8 @@
 
 void demonstruotiTrisMetodus();
 
+void zmogusDemonstravimas();
+
 void correctInvalidData(int& rezultatas, const std::string& fieldName);
 
 void skaitytiIsFailo(std::vector<Studentas>& studentai, const std::string& fileName);
