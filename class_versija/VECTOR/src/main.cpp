@@ -28,10 +28,11 @@ int main() {
         cout << "4 - Sukurti studentu faila\n";
         cout << "5 - Testuoti programos greiti\n";
         cout << "6 - Demonstruoti tris metodus\n";
+        cout << "7 - Demonstruoti Zmogus klases objektu kurima\n";
         cout << "Iveskite pasirinkima: ";
         cin >> pasirinkimas;
 
-        if (cin.fail() || (pasirinkimas < 1 || pasirinkimas > 6)) {
+        if (cin.fail() || (pasirinkimas < 1 || pasirinkimas > 7)) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Neteisingas pasirinkimas. Bandykite dar karta.\n";
@@ -198,6 +199,12 @@ int main() {
         cin.clear();
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         demonstruotiTrisMetodus();
+        system("pause");
+        break;
+    }
+
+    case 7: {
+        zmogusDemonstravimas();
         system("pause");
         break;
     }
