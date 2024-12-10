@@ -2,6 +2,11 @@
 
 ## **Programos versijų aprašymas**
 
+* ### **v1.5**
+
+  - Sukurta **abstrakti** klasė *Zmogus*, kurios objektų sukurti negalima;
+  - Klasė Studentas tapo šios klasės **išvestine (derived)** klase.
+
 * ### **v1.2**
 
   - Rezultatai.h ir Studentas.h sujungti į vieną failą, tad class projekto versijose liko vienintelė klasė Studentas.
