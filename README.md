@@ -127,6 +127,15 @@
 
 #
 
+## **UnitTest paleidimo instrukcija**
+
+  1. Reikia turėti Microsoft Visual Studio 2022 versiją.
+  2. Reikia sukurti naują repozitoriją C++ kalbai, pasirenkant Google Test.
+  3. Failo viduje turi būti test.cpp failo kodas.
+  4. Įprastai paleisti programą.
+     
+#
+
 ## **Programos naudojimo instrukcija**
 
 Paleidus programą reikia pasirinkti iš 5-ių veiksmų. Veiksmą pasirinkti galima įvedus tinkamą skaičių ir paspaudus **ENTER**:
