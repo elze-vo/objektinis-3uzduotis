@@ -2,6 +2,13 @@
 
 ## **Programos versijų aprašymas**
 
+* ### **v2.0**
+
+  - Sukurta projekto dokumentacija naudojant **Doxygen**. Ji įkelta į repozitoriją kaip atskiras *doxygen* HTML katalogas.
+  - Dokumentacijos *.pdf* failas, naudojantis **Latex**: [v2_0.pdf](https://github.com/user-attachments/files/18099887/v2_0.pdf)
+
+  - Realizuoti **Unit Testai** su klase Studentas naudojant Google Test *framework*'ą.
+
 * ### **v1.5**
 
   - Sukurta **abstrakti** klasė *Zmogus*, kurios objektų sukurti negalima;
@@ -184,6 +191,21 @@ Paleidus programą reikia pasirinkti iš 5-ių veiksmų. Veiksmą pasirinkti gal
       - Informacija apie rūšiavimo spartą ir strategijų naudojamų konteinerių užimamą kompiuterio atmintį bus spausdinama ekrane.
       - Reikia pasirinkti, ar norime kartoti programos greičio testavimą nuo pradžių (įvesti **y** ir spausti **ENTER**), ar uždaryti programą (įvesti **n** ir spausti **ENTER**).
      
+- Demonstruoti tris metodus:
+
+  Šis pasirinkimas leidžia pademonstruoti "Rule of Three" metodų veikimą.
+
+  - Įvedus pasirinkimą **6** ir paspaudus **ENTER**, atsiras tuščia eilutė. Reikia vėl paspausti **ENTER**.
+  - Reikia įvesti studento vardą.
+  - Reikia įvesti studento pavardę.
+  - Reikia įvesti namų darbų rezultatus, tačiau jie nebus naudojami. Po kiekvieno rezultato reikia paspausti **ENTER**. Norint užbaigti namų darbų rezultatų įvedimą 1-ajam studentui, reikia du kartus paspausti **ENTER**.
+  - Reikia įvesti egzamino rezultatą, tačiau jis nebus naudojamas.
+
+- Demonstruoti Zmogus klasės objektų kūrimą:
+
+  Šis pasirinkimas parodo Zmogus klasės objektų kūrimą.
+
+  
 #
 
 ## **Kompiuteris (testavimo sistemos parametrai):**
