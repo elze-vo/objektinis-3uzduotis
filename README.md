@@ -1,3 +1,10 @@
+# **Objektinis programavimas (3-oji užduotis)**
+
+* ### **v3.0**
+
+  - Sukurti programos diegimo failai - setup.exe ir setup.msi.
+  - Sukurtos naujos programos diegimo instrukcijos.
+
 # **Objektinis programavimas (2-oji užduotis)**
 
 ## **Programos versijų aprašymas**
@@ -118,6 +125,21 @@
 #
 
 ## **Programos įdiegimo instrukcija**
+
+  Šis programos diegimo variantas tinka, jei norite parsisiųsti tiesiog veikiančią programą be jos kodo.
+
+  1. Atsisiųsti **setup.exe** ir **setup.msi** failus iš *setup* direktorijos.
+  2. Atidaryti setup.exe failą.
+  3. Sekti diegimmo vedlio žingsnius (spausti "Next"), jam baigus veikimą vedlį uždaryti.
+  4. Paleisti programą iš pradžios meniu arba darbalaukio.
+
+  Programą pašalinti galima keliais būdais:
+  * Atidarius setup.msi failą pasirinkti "Remove";
+  * Settings -> Apps -> Installed Apps; Surasti v3.0.exe ir pasirinkti "Remove".
+
+## **Programos įdiegimo (su CMake) instrukcija**
+
+  Šis programos diegimo variantas tinka, jei norite parsisiųsti veikiančią programą ir jos kodą.
 
   1.  Reikia turėti CMake programos 3.10 versiją (arba naujesnę). CMake galima parsisiųsti internetu.
   2.  Reikia parsisiųsti **std::list** arba **std::vector** (arba abi) direktoriją (-as).
